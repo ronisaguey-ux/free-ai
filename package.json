@@ -1,0 +1,13 @@
+{
+  "name": "free-ai",
+  "version": "1.0.0",
+  "description": "One local endpoint in front of every free LLM tier: a ranked model list, automatic fallback, and a linear cooldown per model. Zero dependencies.",
+  "type": "commonjs",
+  "bin": { "free-ai": "server.js" },
+  "main": "server.js",
+  "engines": { "node": ">=20.12" },
+  "scripts": { "start": "node server.js", "test": "node test.js" },
+  "keywords": ["llm", "free", "openai-compatible", "fallback", "proxy", "gateway", "rate-limit"],
+  "license": "MIT",
+  "files": ["server.js", "data", "README.md", "LICENSE"]
+}

@@ -1,0 +1,32 @@
+{
+  "_comment": "Copy to config.json. Every field is optional — the no-key providers work with an empty file. Add a key for any provider you have an account with and its models join the chain automatically.",
+
+  "port": 8790,
+  "host": "127.0.0.1",
+
+  "_keys_comment": "provider id -> key, or a LIST of keys which are rotated one per call",
+  "keys": {
+    "groq": "gsk_...",
+    "gemini": "AIza...",
+    "cerebras": "csk-...",
+    "sambanova": "....",
+    "nvidia_nim": "nvapi-...",
+    "deepseek": "sk-...",
+    "mistral": "...",
+    "open_router": "sk-or-...",
+    "together": "...",
+    "deepinfra": "...",
+    "siliconflow": "sk-...",
+    "nebius": "...",
+    "chutes": "...",
+    "zai": "...",
+    "github_models": "ghp_... (a GitHub token with the models scope)",
+    "cloudflare_ai": "..."
+  },
+
+  "_multi_key_example": "three Gemini keys become 4,500 requests/day instead of 1,500",
+  "keys_rotated_example": { "gemini": ["AIza-key1", "AIza-key2", "AIza-key3"] },
+
+  "backoffMin": 15,
+  "maxBackoffMin": 1440
+}
