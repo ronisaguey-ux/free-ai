@@ -276,9 +276,9 @@
  "orcarouter": {
   "base": "https://api.orcarouter.ai/v1",
   "key_env": "ORCAROUTER_API_KEY",
-  "key_url": "https://www.orcarouter.ai/console",
+  "key_url": "https://api.orcarouter.ai/",
   "name": "OrcaRouter",
-  "our_keys": "our key sk-orca-KNV... free tier, 429s under load (free_rate_limited)."
+  "our_keys": "our key at ~/.config/orch/orcarouter_key.txt (0600) and ORCAROUTER_API_KEY. Replay-scoped keys 403 - it must be an INFERENCE-scoped key. Measured 2026-10-05: /v1/models lists 5, only orcarouter/free is callable."
  },
  "pollinations": {
   "base": "https://text.pollinations.ai/openai",

@@ -360,20 +360,13 @@
   "no_key": false
  },
  {
-  "rank": 46,
-  "provider": "orcarouter",
-  "model": "deepseek/deepseek-v4-flash-free",
-  "base": "https://api.orcarouter.ai/v1",
-  "key_env": "ORCAROUTER_API_KEY",
-  "no_key": false
- },
- {
   "rank": 47,
   "provider": "orcarouter",
   "model": "orcarouter/free",
   "base": "https://api.orcarouter.ai/v1",
   "key_env": "ORCAROUTER_API_KEY",
-  "no_key": false
+  "no_key": false,
+  "note": "the only id this key can call; fusion/fusion-flash/fusion-mini are 403 model_access_denied, auto is 402 out of credits"
  },
  {
   "rank": 48,
