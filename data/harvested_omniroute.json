@@ -1,0 +1,268 @@
+[
+ {
+  "provider": "mistral",
+  "base": "https://api.mistral.ai/v1/chat/completions",
+  "monthlyTokens": 1000000000,
+  "creditTokens": 0,
+  "tos": "caution"
+ },
+ {
+  "provider": "api-airforce",
+  "base": "https://api.airforce/v1/chat/completions",
+  "monthlyTokens": 24000000,
+  "creditTokens": 0,
+  "tos": "caution"
+ },
+ {
+  "provider": "bluesminds",
+  "base": "https://api.bluesminds.com/v1/chat/completions",
+  "monthlyTokens": 7200000,
+  "creditTokens": 0,
+  "tos": "ambiguous"
+ },
+ {
+  "provider": "sambanova",
+  "base": "https://api.sambanova.ai/v1/chat/completions",
+  "monthlyTokens": 6000000,
+  "creditTokens": 0,
+  "tos": "caution"
+ },
+ {
+  "provider": "bazaarlink",
+  "base": "https://bazaarlink.ai/api/v1/chat/completions",
+  "monthlyTokens": 3600000,
+  "creditTokens": 0,
+  "tos": "caution"
+ },
+ {
+  "provider": "cohere",
+  "base": "https://api.cohere.com/compatibility/v1/chat/completions",
+  "monthlyTokens": 800000,
+  "creditTokens": 0,
+  "tos": "caution"
+ },
+ {
+  "provider": "morph",
+  "base": "https://api.morphllm.com/v1/chat/completions",
+  "monthlyTokens": 400000,
+  "creditTokens": 0,
+  "tos": "ok"
+ },
+ {
+  "provider": "huggingface",
+  "base": "https://router.huggingface.co/v1/chat/completions",
+  "monthlyTokens": 200000,
+  "creditTokens": 0,
+  "tos": "caution"
+ },
+ {
+  "provider": "baichuan",
+  "base": "https://api.baichuan-ai.com/v1/chat/completions",
+  "monthlyTokens": 0,
+  "creditTokens": 0,
+  "tos": "ambiguous"
+ },
+ {
+  "provider": "baidu",
+  "base": "https://qianfan.baidubce.com/v2/chat/completions",
+  "monthlyTokens": 0,
+  "creditTokens": 0,
+  "tos": "caution"
+ },
+ {
+  "provider": "bytez",
+  "base": "https://api.bytez.com/models/v2/openai/v1/chat/completions",
+  "monthlyTokens": 0,
+  "creditTokens": 1000000,
+  "tos": "ambiguous"
+ },
+ {
+  "provider": "cerebras",
+  "base": "https://api.cerebras.ai/v1/chat/completions",
+  "monthlyTokens": 0,
+  "creditTokens": 0,
+  "tos": "caution"
+ },
+ {
+  "provider": "deepinfra",
+  "base": "https://api.deepinfra.com/v1/openai/chat/completions",
+  "monthlyTokens": 0,
+  "creditTokens": 1000000,
+  "tos": "caution"
+ },
+ {
+  "provider": "deepseek",
+  "base": "https://api.deepseek.com/chat/completions",
+  "monthlyTokens": 0,
+  "creditTokens": 5000000,
+  "tos": "ok"
+ },
+ {
+  "provider": "doubao",
+  "base": "https://ark.cn-beijing.volces.com/api/v3/chat/completions",
+  "monthlyTokens": 0,
+  "creditTokens": 15000000,
+  "tos": "ambiguous"
+ },
+ {
+  "provider": "freemodel-dev",
+  "base": "https://api.freemodel.dev/v1/chat/completions",
+  "monthlyTokens": 0,
+  "creditTokens": 0,
+  "tos": "unknown"
+ },
+ {
+  "provider": "hyperbolic",
+  "base": "https://api.hyperbolic.xyz/v1/chat/completions",
+  "monthlyTokens": 0,
+  "creditTokens": 5000000,
+  "tos": "ok"
+ },
+ {
+  "provider": "inference-net",
+  "base": "https://api.inference.net/v1/chat/completions",
+  "monthlyTokens": 0,
+  "creditTokens": 0,
+  "tos": "caution"
+ },
+ {
+  "provider": "liquid",
+  "base": "https://inference.liquid.ai/v1/chat/completions",
+  "monthlyTokens": 0,
+  "creditTokens": 0,
+  "tos": "unknown"
+ },
+ {
+  "provider": "monsterapi",
+  "base": "https://api.monsterapi.ai/v1/chat/completions",
+  "monthlyTokens": 0,
+  "creditTokens": 0,
+  "tos": "ambiguous"
+ },
+ {
+  "provider": "nebius",
+  "base": "https://api.tokenfactory.nebius.com/v1/chat/completions",
+  "monthlyTokens": 0,
+  "creditTokens": 1000000,
+  "tos": "caution"
+ },
+ {
+  "provider": "nous-research",
+  "base": "https://inference-api.nousresearch.com/v1/chat/completions",
+  "monthlyTokens": 0,
+  "creditTokens": 0,
+  "tos": "ambiguous"
+ },
+ {
+  "provider": "novita",
+  "base": "https://api.novita.ai/openai/v1/chat/completions",
+  "monthlyTokens": 0,
+  "creditTokens": 500000,
+  "tos": "caution"
+ },
+ {
+  "provider": "nscale",
+  "base": "https://inference.api.nscale.com/v1/chat/completions",
+  "monthlyTokens": 0,
+  "creditTokens": 5000000,
+  "tos": "caution"
+ },
+ {
+  "provider": "nvidia",
+  "base": "https://integrate.api.nvidia.com/v1/chat/completions",
+  "monthlyTokens": 0,
+  "creditTokens": 0,
+  "tos": "caution"
+ },
+ {
+  "provider": "ollama-cloud",
+  "base": "https://ollama.com/v1/chat/completions",
+  "monthlyTokens": 0,
+  "creditTokens": 0,
+  "tos": "ambiguous"
+ },
+ {
+  "provider": "pollinations",
+  "base": "https://gen.pollinations.ai/v1/chat/completions",
+  "monthlyTokens": 0,
+  "creditTokens": 0,
+  "tos": "caution"
+ },
+ {
+  "provider": "predibase",
+  "base": "https://serving.app.predibase.com/v1/chat/completions",
+  "monthlyTokens": 0,
+  "creditTokens": 25000000,
+  "tos": "caution"
+ },
+ {
+  "provider": "publicai",
+  "base": "https://api.publicai.co/v1/chat/completions",
+  "monthlyTokens": 0,
+  "creditTokens": 0,
+  "tos": "caution"
+ },
+ {
+  "provider": "qoder",
+  "base": "https://api.qoder.com/v1/chat/completions",
+  "monthlyTokens": 0,
+  "creditTokens": 1000000,
+  "tos": "caution"
+ },
+ {
+  "provider": "reka",
+  "base": "https://api.reka.ai/v1/chat/completions",
+  "monthlyTokens": 0,
+  "creditTokens": 0,
+  "tos": "caution"
+ },
+ {
+  "provider": "scaleway",
+  "base": "https://api.scaleway.ai/v1/chat/completions",
+  "monthlyTokens": 0,
+  "creditTokens": 1000000,
+  "tos": "ok"
+ },
+ {
+  "provider": "sensenova",
+  "base": "https://token.sensenova.cn/v1/chat/completions",
+  "monthlyTokens": 0,
+  "creditTokens": 0,
+  "tos": "caution"
+ },
+ {
+  "provider": "siliconflow",
+  "base": "https://api.siliconflow.com/v1/chat/completions",
+  "monthlyTokens": 0,
+  "creditTokens": 0,
+  "tos": "caution"
+ },
+ {
+  "provider": "sparkdesk",
+  "base": "https://spark-api-open.xf-yun.com/v1/chat/completions",
+  "monthlyTokens": 0,
+  "creditTokens": 0,
+  "tos": "caution"
+ },
+ {
+  "provider": "stepfun",
+  "base": "https://api.stepfun.com/v1/chat/completions",
+  "monthlyTokens": 0,
+  "creditTokens": 0,
+  "tos": "ok"
+ },
+ {
+  "provider": "tencent",
+  "base": "https://api.hunyuan.cloud.tencent.com/v1/chat/completions",
+  "monthlyTokens": 0,
+  "creditTokens": 0,
+  "tos": "caution"
+ },
+ {
+  "provider": "uncloseai",
+  "base": "https://hermes.ai.unturf.com/v1/chat/completions",
+  "monthlyTokens": 0,
+  "creditTokens": 0,
+  "tos": "caution"
+ }
+]

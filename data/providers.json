@@ -24,6 +24,42 @@
   "key_url": "https://platform.claude.com/settings/keys",
   "name": "Anthropic"
  },
+ "api_airforce": {
+  "base": "https://api.airforce/v1",
+  "free_tier": "24.0M tokens/mo",
+  "harvested_from": "OmniRoute freeModelCatalog (2026-09-12 curated); base URL from its provider registry",
+  "key_env": "API_AIRFORCE_API_KEY",
+  "key_url": "",
+  "name": "api-airforce",
+  "tos_risk": "caution"
+ },
+ "baichuan": {
+  "base": "https://api.baichuan-ai.com/v1",
+  "free_tier": "0.0M tokens/mo",
+  "harvested_from": "OmniRoute freeModelCatalog (2026-09-12 curated); base URL from its provider registry",
+  "key_env": "BAICHUAN_API_KEY",
+  "key_url": "",
+  "name": "baichuan",
+  "tos_risk": "ambiguous"
+ },
+ "baidu": {
+  "base": "https://qianfan.baidubce.com/v2",
+  "free_tier": "0.0M tokens/mo",
+  "harvested_from": "OmniRoute freeModelCatalog (2026-09-12 curated); base URL from its provider registry",
+  "key_env": "BAIDU_API_KEY",
+  "key_url": "",
+  "name": "baidu",
+  "tos_risk": "caution"
+ },
+ "bazaarlink": {
+  "base": "https://bazaarlink.ai/api/v1",
+  "free_tier": "3.6M tokens/mo",
+  "harvested_from": "OmniRoute freeModelCatalog (2026-09-12 curated); base URL from its provider registry",
+  "key_env": "BAZAARLINK_API_KEY",
+  "key_url": "",
+  "name": "bazaarlink",
+  "tos_risk": "caution"
+ },
  "bedrock": {
   "base": "https://bedrock-mantle.us-east-1.api.aws/v1",
   "key_env": "AWS_BEARER_TOKEN_BEDROCK",
@@ -36,6 +72,24 @@
   "key_url": "https://www.bitdeer.ai/",
   "name": "Bitdeer AI Cloud",
   "our_keys": "our key lives at ~/.config/orch/bitdeer_key.txt (0600) and in BITDEER_API_KEY. Must send User-Agent: curl/8.5.0 - Cloudflare 403s python-urllib. Measured 2026-10-05 on the refreshed key: 5 of 8 catalogue models answer; BAAI/bge-* are embeddings and seedream is an image model, not chat."
+ },
+ "bluesminds": {
+  "base": "https://api.bluesminds.com/v1",
+  "free_tier": "7.2M tokens/mo",
+  "harvested_from": "OmniRoute freeModelCatalog (2026-09-12 curated); base URL from its provider registry",
+  "key_env": "BLUESMINDS_API_KEY",
+  "key_url": "",
+  "name": "bluesminds",
+  "tos_risk": "ambiguous"
+ },
+ "bytez": {
+  "base": "https://api.bytez.com/models/v2/openai/v1",
+  "free_tier": "0.0M tokens/mo + 1M one-time",
+  "harvested_from": "OmniRoute freeModelCatalog (2026-09-12 curated); base URL from its provider registry",
+  "key_env": "BYTEZ_API_KEY",
+  "key_url": "",
+  "name": "bytez",
+  "tos_risk": "ambiguous"
  },
  "cerebras": {
   "base": "https://api.cerebras.ai/v1",
@@ -92,6 +146,15 @@
   "key_url": "https://platform.deepseek.com/api_keys",
   "name": "DeepSeek"
  },
+ "doubao": {
+  "base": "https://ark.cn-beijing.volces.com/api/v3",
+  "free_tier": "0.0M tokens/mo + 15M one-time",
+  "harvested_from": "OmniRoute freeModelCatalog (2026-09-12 curated); base URL from its provider registry",
+  "key_env": "DOUBAO_API_KEY",
+  "key_url": "",
+  "name": "doubao",
+  "tos_risk": "ambiguous"
+ },
  "experiential": {
   "base": "https://api.experientiallabs.ai/v1",
   "key_env": "EXPLABS_API_KEY",
@@ -109,6 +172,15 @@
   "key_env": "FIREWORKS_API_KEY",
   "key_url": "https://fireworks.ai/account/api-keys",
   "name": "Fireworks"
+ },
+ "freemodel_dev": {
+  "base": "https://api.freemodel.dev/v1",
+  "free_tier": "0.0M tokens/mo",
+  "harvested_from": "OmniRoute freeModelCatalog (2026-09-12 curated); base URL from its provider registry",
+  "key_env": "FREEMODEL_DEV_API_KEY",
+  "key_url": "",
+  "name": "freemodel-dev",
+  "tos_risk": "unknown"
  },
  "gemini": {
   "base": "https://generativelanguage.googleapis.com/v1beta/openai",
@@ -146,6 +218,24 @@
   "key_url": "https://huggingface.co/settings/tokens",
   "name": "Hugging Face"
  },
+ "hyperbolic": {
+  "base": "https://api.hyperbolic.xyz/v1",
+  "free_tier": "0.0M tokens/mo + 5M one-time",
+  "harvested_from": "OmniRoute freeModelCatalog (2026-09-12 curated); base URL from its provider registry",
+  "key_env": "HYPERBOLIC_API_KEY",
+  "key_url": "",
+  "name": "hyperbolic",
+  "tos_risk": "ok"
+ },
+ "inference_net": {
+  "base": "https://api.inference.net/v1",
+  "free_tier": "0.0M tokens/mo",
+  "harvested_from": "OmniRoute freeModelCatalog (2026-09-12 curated); base URL from its provider registry",
+  "key_env": "INFERENCE_NET_API_KEY",
+  "key_url": "",
+  "name": "inference-net",
+  "tos_risk": "caution"
+ },
  "kilo": {
   "base": "https://api.kilo.ai/api/gateway",
   "key_env": "KILO_API_KEY",
@@ -169,6 +259,15 @@
   "key_env": "LIGHTNING_API_KEY",
   "key_url": "https://lightning.ai/lightning-ai/model-apis/models",
   "name": "Lightning AI"
+ },
+ "liquid": {
+  "base": "https://inference.liquid.ai/v1",
+  "free_tier": "0.0M tokens/mo",
+  "harvested_from": "OmniRoute freeModelCatalog (2026-09-12 curated); base URL from its provider registry",
+  "key_env": "LIQUID_API_KEY",
+  "key_url": "",
+  "name": "liquid",
+  "tos_risk": "unknown"
  },
  "llamacpp": {
   "base": "http://localhost:8080/v1",
@@ -207,6 +306,24 @@
   "key_url": "https://console.mistral.ai/",
   "name": "Mistral Codestral"
  },
+ "monsterapi": {
+  "base": "https://api.monsterapi.ai/v1",
+  "free_tier": "0.0M tokens/mo",
+  "harvested_from": "OmniRoute freeModelCatalog (2026-09-12 curated); base URL from its provider registry",
+  "key_env": "MONSTERAPI_API_KEY",
+  "key_url": "",
+  "name": "monsterapi",
+  "tos_risk": "ambiguous"
+ },
+ "morph": {
+  "base": "https://api.morphllm.com/v1",
+  "free_tier": "0.4M tokens/mo",
+  "harvested_from": "OmniRoute freeModelCatalog (2026-09-12 curated); base URL from its provider registry",
+  "key_env": "MORPH_API_KEY",
+  "key_url": "",
+  "name": "morph",
+  "tos_risk": "ok"
+ },
  "nararoute": {
   "base": "https://router.bynara.id/v1",
   "key_env": "NARAROUTE_API_KEY",
@@ -219,11 +336,29 @@
   "key_url": "https://tokenfactory.nebius.com/project/api-keys",
   "name": "Nebius Token Factory"
  },
+ "nous_research": {
+  "base": "https://inference-api.nousresearch.com/v1",
+  "free_tier": "0.0M tokens/mo",
+  "harvested_from": "OmniRoute freeModelCatalog (2026-09-12 curated); base URL from its provider registry",
+  "key_env": "NOUS_RESEARCH_API_KEY",
+  "key_url": "",
+  "name": "nous-research",
+  "tos_risk": "ambiguous"
+ },
  "novita": {
   "base": "https://api.novita.ai/openai/v1",
   "key_env": "NOVITA_API_KEY",
   "key_url": "https://novita.ai/settings/key-management",
   "name": "Novita AI"
+ },
+ "nscale": {
+  "base": "https://inference.api.nscale.com/v1",
+  "free_tier": "0.0M tokens/mo + 5M one-time",
+  "harvested_from": "OmniRoute freeModelCatalog (2026-09-12 curated); base URL from its provider registry",
+  "key_env": "NSCALE_API_KEY",
+  "key_url": "",
+  "name": "nscale",
+  "tos_risk": "caution"
  },
  "nvidia_nim": {
   "base": "https://integrate.api.nvidia.com/v1",
@@ -308,11 +443,47 @@
   "key_url": "https://platform.poolside.ai/",
   "name": "Poolside AI"
  },
+ "predibase": {
+  "base": "https://serving.app.predibase.com/v1",
+  "free_tier": "0.0M tokens/mo + 25M one-time",
+  "harvested_from": "OmniRoute freeModelCatalog (2026-09-12 curated); base URL from its provider registry",
+  "key_env": "PREDIBASE_API_KEY",
+  "key_url": "",
+  "name": "predibase",
+  "tos_risk": "caution"
+ },
+ "publicai": {
+  "base": "https://api.publicai.co/v1",
+  "free_tier": "0.0M tokens/mo",
+  "harvested_from": "OmniRoute freeModelCatalog (2026-09-12 curated); base URL from its provider registry",
+  "key_env": "PUBLICAI_API_KEY",
+  "key_url": "",
+  "name": "publicai",
+  "tos_risk": "caution"
+ },
+ "qoder": {
+  "base": "https://api.qoder.com/v1",
+  "free_tier": "0.0M tokens/mo + 1M one-time",
+  "harvested_from": "OmniRoute freeModelCatalog (2026-09-12 curated); base URL from its provider registry",
+  "key_env": "QODER_API_KEY",
+  "key_url": "",
+  "name": "qoder",
+  "tos_risk": "caution"
+ },
  "qwencloud_coding": {
   "base": "https://coding-intl.dashscope.aliyuncs.com/v1",
   "key_env": "QWENCLOUD_CODING_API_KEY",
   "key_url": "https://home.qwencloud.com/api-keys",
   "name": "QwenCloud Coding Plan"
+ },
+ "reka": {
+  "base": "https://api.reka.ai/v1",
+  "free_tier": "0.0M tokens/mo",
+  "harvested_from": "OmniRoute freeModelCatalog (2026-09-12 curated); base URL from its provider registry",
+  "key_env": "REKA_API_KEY",
+  "key_url": "",
+  "name": "reka",
+  "tos_risk": "caution"
  },
  "requesty": {
   "base": "https://router.requesty.ai/v1",
@@ -332,11 +503,47 @@
   "key_url": "https://console.scaleway.com/iam/api-keys",
   "name": "Scaleway"
  },
+ "sensenova": {
+  "base": "https://token.sensenova.cn/v1",
+  "free_tier": "0.0M tokens/mo",
+  "harvested_from": "OmniRoute freeModelCatalog (2026-09-12 curated); base URL from its provider registry",
+  "key_env": "SENSENOVA_API_KEY",
+  "key_url": "",
+  "name": "sensenova",
+  "tos_risk": "caution"
+ },
  "siliconflow": {
   "base": "https://api.siliconflow.com/v1",
   "key_env": "SILICONFLOW_API_KEY",
   "key_url": "https://cloud.siliconflow.com/account/ak",
   "name": "SiliconFlow"
+ },
+ "sparkdesk": {
+  "base": "https://spark-api-open.xf-yun.com/v1",
+  "free_tier": "0.0M tokens/mo",
+  "harvested_from": "OmniRoute freeModelCatalog (2026-09-12 curated); base URL from its provider registry",
+  "key_env": "SPARKDESK_API_KEY",
+  "key_url": "",
+  "name": "sparkdesk",
+  "tos_risk": "caution"
+ },
+ "stepfun": {
+  "base": "https://api.stepfun.com/v1",
+  "free_tier": "0.0M tokens/mo",
+  "harvested_from": "OmniRoute freeModelCatalog (2026-09-12 curated); base URL from its provider registry",
+  "key_env": "STEPFUN_API_KEY",
+  "key_url": "",
+  "name": "stepfun",
+  "tos_risk": "ok"
+ },
+ "tencent": {
+  "base": "https://api.hunyuan.cloud.tencent.com/v1",
+  "free_tier": "0.0M tokens/mo",
+  "harvested_from": "OmniRoute freeModelCatalog (2026-09-12 curated); base URL from its provider registry",
+  "key_env": "TENCENT_API_KEY",
+  "key_url": "",
+  "name": "tencent",
+  "tos_risk": "caution"
  },
  "together": {
   "base": "https://api.together.ai/v1",
@@ -349,6 +556,15 @@
   "key_env": "TOKENROUTER_API_KEY",
   "key_url": "https://www.tokenrouter.com/",
   "name": "TokenRouter"
+ },
+ "uncloseai": {
+  "base": "https://hermes.ai.unturf.com/v1",
+  "free_tier": "0.0M tokens/mo",
+  "harvested_from": "OmniRoute freeModelCatalog (2026-09-12 curated); base URL from its provider registry",
+  "key_env": "UNCLOSEAI_API_KEY",
+  "key_url": "",
+  "name": "uncloseai",
+  "tos_risk": "caution"
  },
  "vercel": {
   "base": "https://ai-gateway.vercel.sh/v1",

@@ -466,5 +466,275 @@
   "no_key": false,
   "key_env": "DAHL_API_KEY",
   "note": "dahl lane model"
+ },
+ {
+  "rank": 200,
+  "provider": "api_airforce",
+  "model": "api-airforce-default",
+  "base": "https://api.airforce/v1",
+  "key_env": "API_AIRFORCE_API_KEY",
+  "no_key": false,
+  "note": ""
+ },
+ {
+  "rank": 201,
+  "provider": "bluesminds",
+  "model": "bluesminds-default",
+  "base": "https://api.bluesminds.com/v1",
+  "key_env": "BLUESMINDS_API_KEY",
+  "no_key": false,
+  "note": ""
+ },
+ {
+  "rank": 202,
+  "provider": "bazaarlink",
+  "model": "bazaarlink-default",
+  "base": "https://bazaarlink.ai/api/v1",
+  "key_env": "BAZAARLINK_API_KEY",
+  "no_key": false,
+  "note": ""
+ },
+ {
+  "rank": 203,
+  "provider": "cohere",
+  "model": "cohere-default",
+  "base": "https://api.cohere.com/compatibility/v1",
+  "key_env": "COHERE_API_KEY",
+  "no_key": false,
+  "note": ""
+ },
+ {
+  "rank": 204,
+  "provider": "morph",
+  "model": "morph-default",
+  "base": "https://api.morphllm.com/v1",
+  "key_env": "MORPH_API_KEY",
+  "no_key": false,
+  "note": ""
+ },
+ {
+  "rank": 205,
+  "provider": "huggingface",
+  "model": "huggingface-default",
+  "base": "https://router.huggingface.co/v1",
+  "key_env": "HUGGINGFACE_API_KEY",
+  "no_key": false,
+  "note": ""
+ },
+ {
+  "rank": 206,
+  "provider": "baichuan",
+  "model": "baichuan-default",
+  "base": "https://api.baichuan-ai.com/v1",
+  "key_env": "BAICHUAN_API_KEY",
+  "no_key": false,
+  "note": ""
+ },
+ {
+  "rank": 207,
+  "provider": "baidu",
+  "model": "baidu-default",
+  "base": "https://qianfan.baidubce.com/v2",
+  "key_env": "BAIDU_API_KEY",
+  "no_key": false,
+  "note": ""
+ },
+ {
+  "rank": 208,
+  "provider": "bytez",
+  "model": "bytez-default",
+  "base": "https://api.bytez.com/models/v2/openai/v1",
+  "key_env": "BYTEZ_API_KEY",
+  "no_key": false,
+  "note": ""
+ },
+ {
+  "rank": 209,
+  "provider": "doubao",
+  "model": "doubao-default",
+  "base": "https://ark.cn-beijing.volces.com/api/v3",
+  "key_env": "DOUBAO_API_KEY",
+  "no_key": false,
+  "note": ""
+ },
+ {
+  "rank": 210,
+  "provider": "freemodel_dev",
+  "model": "freemodel-dev-default",
+  "base": "https://api.freemodel.dev/v1",
+  "key_env": "FREEMODEL_DEV_API_KEY",
+  "no_key": false,
+  "note": ""
+ },
+ {
+  "rank": 211,
+  "provider": "hyperbolic",
+  "model": "hyperbolic-default",
+  "base": "https://api.hyperbolic.xyz/v1",
+  "key_env": "HYPERBOLIC_API_KEY",
+  "no_key": false,
+  "note": ""
+ },
+ {
+  "rank": 212,
+  "provider": "inference_net",
+  "model": "inference-net-default",
+  "base": "https://api.inference.net/v1",
+  "key_env": "INFERENCE_NET_API_KEY",
+  "no_key": false,
+  "note": ""
+ },
+ {
+  "rank": 213,
+  "provider": "liquid",
+  "model": "liquid-default",
+  "base": "https://inference.liquid.ai/v1",
+  "key_env": "LIQUID_API_KEY",
+  "no_key": false,
+  "note": ""
+ },
+ {
+  "rank": 214,
+  "provider": "monsterapi",
+  "model": "monsterapi-default",
+  "base": "https://api.monsterapi.ai/v1",
+  "key_env": "MONSTERAPI_API_KEY",
+  "no_key": false,
+  "note": ""
+ },
+ {
+  "rank": 215,
+  "provider": "nous_research",
+  "model": "nous-research-default",
+  "base": "https://inference-api.nousresearch.com/v1",
+  "key_env": "NOUS_RESEARCH_API_KEY",
+  "no_key": false,
+  "note": ""
+ },
+ {
+  "rank": 216,
+  "provider": "novita",
+  "model": "novita-default",
+  "base": "https://api.novita.ai/openai/v1",
+  "key_env": "NOVITA_API_KEY",
+  "no_key": false,
+  "note": ""
+ },
+ {
+  "rank": 217,
+  "provider": "nscale",
+  "model": "nscale-default",
+  "base": "https://inference.api.nscale.com/v1",
+  "key_env": "NSCALE_API_KEY",
+  "no_key": false,
+  "note": ""
+ },
+ {
+  "rank": 218,
+  "provider": "ollama_cloud",
+  "model": "ollama-cloud-default",
+  "base": "https://ollama.com/v1",
+  "key_env": "OLLAMA_CLOUD_API_KEY",
+  "no_key": false,
+  "note": ""
+ },
+ {
+  "rank": 219,
+  "provider": "pollinations",
+  "model": "pollinations-default",
+  "base": "https://gen.pollinations.ai/v1",
+  "key_env": "POLLINATIONS_API_KEY",
+  "no_key": true,
+  "note": ""
+ },
+ {
+  "rank": 220,
+  "provider": "predibase",
+  "model": "predibase-default",
+  "base": "https://serving.app.predibase.com/v1",
+  "key_env": "PREDIBASE_API_KEY",
+  "no_key": false,
+  "note": ""
+ },
+ {
+  "rank": 221,
+  "provider": "publicai",
+  "model": "publicai-default",
+  "base": "https://api.publicai.co/v1",
+  "key_env": "PUBLICAI_API_KEY",
+  "no_key": false,
+  "note": ""
+ },
+ {
+  "rank": 222,
+  "provider": "qoder",
+  "model": "qoder-default",
+  "base": "https://api.qoder.com/v1",
+  "key_env": "QODER_API_KEY",
+  "no_key": false,
+  "note": ""
+ },
+ {
+  "rank": 223,
+  "provider": "reka",
+  "model": "reka-default",
+  "base": "https://api.reka.ai/v1",
+  "key_env": "REKA_API_KEY",
+  "no_key": false,
+  "note": ""
+ },
+ {
+  "rank": 224,
+  "provider": "scaleway",
+  "model": "scaleway-default",
+  "base": "https://api.scaleway.ai/v1",
+  "key_env": "SCALEWAY_API_KEY",
+  "no_key": false,
+  "note": ""
+ },
+ {
+  "rank": 225,
+  "provider": "sensenova",
+  "model": "sensenova-default",
+  "base": "https://token.sensenova.cn/v1",
+  "key_env": "SENSENOVA_API_KEY",
+  "no_key": false,
+  "note": ""
+ },
+ {
+  "rank": 226,
+  "provider": "sparkdesk",
+  "model": "sparkdesk-default",
+  "base": "https://spark-api-open.xf-yun.com/v1",
+  "key_env": "SPARKDESK_API_KEY",
+  "no_key": false,
+  "note": ""
+ },
+ {
+  "rank": 227,
+  "provider": "stepfun",
+  "model": "stepfun-default",
+  "base": "https://api.stepfun.com/v1",
+  "key_env": "STEPFUN_API_KEY",
+  "no_key": false,
+  "note": ""
+ },
+ {
+  "rank": 228,
+  "provider": "tencent",
+  "model": "tencent-default",
+  "base": "https://api.hunyuan.cloud.tencent.com/v1",
+  "key_env": "TENCENT_API_KEY",
+  "no_key": false,
+  "note": ""
+ },
+ {
+  "rank": 229,
+  "provider": "uncloseai",
+  "model": "uncloseai-default",
+  "base": "https://hermes.ai.unturf.com/v1",
+  "key_env": "UNCLOSEAI_API_KEY",
+  "no_key": false,
+  "note": ""
  }
 ]
