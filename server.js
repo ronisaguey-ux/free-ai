@@ -129,8 +129,28 @@ function chain({ includeCooling = false } = {}) {
 }
 
 // ── upstream call ─────────────────────────────────────────────────────────────
+// Every model's `base` is data from data/models.json, which is tracked and therefore
+// editable by a pull request. That value is concatenated into a URL that carries our
+// API key, so a bad entry is a credential-leak and SSRF vector, not just a broken model.
+// MEASURED 2026-10-05: no scheme or host validation existed at the call site - a base of
+// file:///etc or http://169.254.169.254 would have been fetched, with the Bearer header
+// attached. Validate before the fetch, and fail the model rather than the request.
+function safeUpstreamUrl(base) {
+  let u;
+  try { u = new URL(String(base)); } catch { return null; }
+  if (u.protocol !== 'http:' && u.protocol !== 'https:') return null;
+  // Link-local / cloud-metadata / unspecified addresses are never a legitimate LLM
+  // upstream and are the classic SSRF targets. Loopback IS legitimate here - the
+  // webchat gateways we route to run on 127.0.0.1 - so it stays allowed.
+  const h = u.hostname.replace(/^\[|\]$/g, '').toLowerCase();
+  if (h === '169.254.169.254' || h === 'metadata.google.internal' || h === '0.0.0.0') return null;
+  if (/^169\.254\./.test(h) || /^fe80:/i.test(h)) return null;
+  return u.origin + u.pathname.replace(/\/$/, '') + '/chat/completions';
+}
+
 function upstream(m, body, key, signal) {
-  const url = m.base.replace(/\/$/, '') + '/chat/completions';
+  const url = safeUpstreamUrl(m.base);
+  if (!url) throw new Error(`refusing an unusable upstream base for ${m.provider}: ${String(m.base).slice(0, 40)}`);
   const payload = { ...body, model: m.model };
   return fetch(url, {
     method: 'POST',

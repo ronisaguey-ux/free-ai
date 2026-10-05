@@ -160,3 +160,32 @@ async function req(p, opts) {
   fs.rmSync(dir, { recursive: true, force: true });
   process.exit(failed ? 1 : 0);
 })();
+
+// ── upstream base URL guard ───────────────────────────────────────────────────
+// Every model's `base` is tracked data, so a pull request can change it. That value is
+// concatenated into a URL that carries our Bearer token, making a bad entry a
+// credential-leak and SSRF vector rather than a broken model. The guard is READ OUT OF
+// server.js rather than copied, so this test cannot drift from the implementation.
+const serverSrc = fs.readFileSync(path.join(__dirname, 'server.js'), 'utf8');
+const guardSrc = serverSrc.match(/function safeUpstreamUrl\(base\)[\s\S]*?\n\}/);
+check('the upstream guard exists in server.js', !!guardSrc);
+const safeUpstreamUrl = guardSrc ? eval(`(${guardSrc[0]})`) : () => null;
+
+check('a usable upstream resolves to the chat completions URL',
+  safeUpstreamUrl('https://api.groq.com/openai/v1') === 'https://api.groq.com/openai/v1/chat/completions');
+check('loopback stays allowed (the webchat gateways live there)',
+  safeUpstreamUrl('http://127.0.0.1:8080/v1') === 'http://127.0.0.1:8080/v1/chat/completions');
+
+for (const bad of [
+  'file:///etc/passwd',
+  'gopher://x/y',
+  'javascript:alert(1)',
+  'not a url',
+  'http://169.254.169.254/latest/meta-data',
+  'http://169.254.1.1/x',
+  'http://metadata.google.internal/x',
+  'http://0.0.0.0/x',
+  'http://[fe80::1]/x',
+]) {
+  check(`refuses ${bad}`, safeUpstreamUrl(bad) === null);
+}
