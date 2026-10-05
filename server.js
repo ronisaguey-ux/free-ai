@@ -150,6 +150,19 @@ function isPenalty(status) {
   return status === 401 || status === 402 || status === 403 || status === 404 || status === 408 || status === 429 || status >= 500;
 }
 
+/**
+ * A 400 is normally the caller's fault and must NOT be hidden behind a fallback. But providers
+ * also use 400 for "this model is not available", which is a per-model condition and exactly
+ * what the chain exists to route around. Measured live: llm7 answers 400 model_unavailable and
+ * the chain stopped dead. The distinction has to be made on the body, because the status code
+ * alone cannot tell the two apart.
+ */
+function isModelUnavailable(status, text) {
+  if (status !== 400 && status !== 422) return false;
+  return /model[_ -]?(unavailable|not[_ -]?found|deprecat|retired|invalid)/i.test(text)
+      || /unknown model|unsupported model|model[^"]{0,40}not[^"]{0,20}(available|supported|exist)/i.test(text);
+}
+
 // ── request handling ──────────────────────────────────────────────────────────
 async function chat(body, cfgRes) {
   const wantStream = !!body.stream;
@@ -203,7 +216,7 @@ async function chat(body, cfgRes) {
 
       const text = await res.text().catch(() => '');
       const why = `http ${res.status}: ${text.slice(0, 160)}`;
-      if (isPenalty(res.status)) {
+      if (isPenalty(res.status) || isModelUnavailable(res.status, text)) {
         penalise(m, why);
         tried.push(`${m.provider}/${m.model} ${why}`);
         continue;
