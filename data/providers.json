@@ -73,6 +73,13 @@
   "key_url": "https://dashboard.cohere.com/api-keys",
   "name": "Cohere"
  },
+ "dahl": {
+  "base": "https://inference.dahl.global/v1",
+  "key_env": "DAHL_API_KEY",
+  "key_url": "https://inference.dahl.global/tokens",
+  "name": "Dahl Global",
+  "our_keys": "our key at ~/.config/orch/dahl_key.txt (0600). A fresh token is mintable with an unauthenticated POST to https://inference.dahl.global/tokens, so an exhausted key is replaceable without an account."
+ },
  "deepinfra": {
   "base": "https://api.deepinfra.com/v1/openai",
   "key_env": "DEEPINFRA_API_KEY",
@@ -223,6 +230,14 @@
   "key_env": "NVIDIA_NIM_API_KEY",
   "key_url": "https://build.nvidia.com/settings/api-keys",
   "name": "NVIDIA NIM"
+ },
+ "oculus_webchat": {
+  "base": "http://127.0.0.1:8080/v1",
+  "key_env": "",
+  "key_url": "",
+  "name": "Oculus webchat gateways (local)",
+  "no_key": true,
+  "our_keys": "no key: these are the local webchat-to-api gateways on this box. Ports 8080 (deepseek), 8081 (deepseek2), 8083 (deepseek4). Model id is 'anymodel'. They serialise per account and need 20-45s between sends."
  },
  "ollama": {
   "base": "http://localhost:11434",

@@ -412,5 +412,59 @@
   "key_env": "BITDEER_API_KEY",
   "no_key": false,
   "note": "REASONING - needs max_tokens >= ~3000 or content is empty"
+ },
+ {
+  "rank": 60,
+  "provider": "oculus_webchat",
+  "model": "anymodel",
+  "base": "http://127.0.0.1:8080/v1",
+  "no_key": true,
+  "key_env": "",
+  "note": "deepseek webchat gateway"
+ },
+ {
+  "rank": 61,
+  "provider": "oculus_webchat",
+  "model": "anymodel",
+  "base": "http://127.0.0.1:8081/v1",
+  "no_key": true,
+  "key_env": "",
+  "note": "deepseek2 webchat gateway"
+ },
+ {
+  "rank": 62,
+  "provider": "oculus_webchat",
+  "model": "anymodel",
+  "base": "http://127.0.0.1:8083/v1",
+  "no_key": true,
+  "key_env": "",
+  "note": "deepseek4 webchat gateway"
+ },
+ {
+  "rank": 63,
+  "provider": "open_router",
+  "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+  "base": "https://openrouter.ai/api/v1",
+  "no_key": false,
+  "key_env": "OPENROUTER_API_KEY",
+  "note": "openrouter lane model 1"
+ },
+ {
+  "rank": 64,
+  "provider": "open_router",
+  "model": "nex-agi/nex-n2.5-pro:free",
+  "base": "https://openrouter.ai/api/v1",
+  "no_key": false,
+  "key_env": "OPENROUTER_API_KEY",
+  "note": "openrouter lane model 2"
+ },
+ {
+  "rank": 65,
+  "provider": "dahl",
+  "model": "MiniMaxAI/MiniMax-M2.7",
+  "base": "https://inference.dahl.global/v1",
+  "no_key": false,
+  "key_env": "DAHL_API_KEY",
+  "note": "dahl lane model"
  }
 ]
