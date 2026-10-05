@@ -21,7 +21,12 @@
     "chutes": "...",
     "zai": "...",
     "github_models": "ghp_... (a GitHub token with the models scope)",
-    "cloudflare_ai": "..."
+    "cloudflare_ai": "...",
+
+    "_our_free_keys_comment": "our own free tiers - the values live in ~/.config/orch/pat.txt and ~/.claude/openrouter.token, never in this repo",
+    "open_router": "$(cat ~/.claude/openrouter.token)   # $1 cap, only :free ids work",
+    "orcarouter": "sk-orca-...   # free tier, 429s under load",
+    "bitdeer": "AIni...   # $5 voucher, only deepseek-ai/DeepSeek-V4-Flash bills"
   },
 
   "_multi_key_example": "three Gemini keys become 4,500 requests/day instead of 1,500",

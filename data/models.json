@@ -358,5 +358,29 @@
   "base": "http://localhost:11434",
   "key_env": null,
   "no_key": false
+ },
+ {
+  "rank": 46,
+  "provider": "orcarouter",
+  "model": "deepseek/deepseek-v4-flash-free",
+  "base": "https://api.orcarouter.ai/v1",
+  "key_env": "ORCAROUTER_API_KEY",
+  "no_key": false
+ },
+ {
+  "rank": 47,
+  "provider": "orcarouter",
+  "model": "orcarouter/free",
+  "base": "https://api.orcarouter.ai/v1",
+  "key_env": "ORCAROUTER_API_KEY",
+  "no_key": false
+ },
+ {
+  "rank": 48,
+  "provider": "bitdeer",
+  "model": "deepseek-ai/DeepSeek-V4-Flash",
+  "base": "https://api-inference.bitdeer.ai/v1",
+  "key_env": "BITDEER_API_KEY",
+  "no_key": false
  }
 ]

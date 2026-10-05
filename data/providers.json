@@ -30,6 +30,13 @@
   "key_url": "https://console.aws.amazon.com/bedrock/",
   "name": "Amazon Bedrock"
  },
+ "bitdeer": {
+  "base": "https://api-inference.bitdeer.ai/v1",
+  "key_env": "BITDEER_API_KEY",
+  "key_url": "https://www.bitdeer.ai/",
+  "name": "Bitdeer AI Cloud",
+  "our_keys": "our key AIni... $5 voucher, SCOPE-LIMITED: only deepseek-ai/DeepSeek-V4-Flash bills. V4.1 returns insufficient balance; GLM/Qwen bill but return empty. Send User-Agent: curl/8.5.0 - Cloudflare 403s python-urllib."
+ },
  "cerebras": {
   "base": "https://api.cerebras.ai/v1",
   "key_env": "CEREBRAS_API_KEY",
@@ -233,7 +240,8 @@
   "base": "https://openrouter.ai/api/v1",
   "key_env": "OPENROUTER_API_KEY",
   "key_url": "https://openrouter.ai/keys",
-  "name": "OpenRouter"
+  "name": "OpenRouter",
+  "our_keys": "our key: ~/.claude/openrouter.token. $1 cap, so ONLY the :free ids work."
  },
  "openai": {
   "base": "https://chatgpt.com/backend-api/codex",
@@ -269,7 +277,8 @@
   "base": "https://api.orcarouter.ai/v1",
   "key_env": "ORCAROUTER_API_KEY",
   "key_url": "https://www.orcarouter.ai/console",
-  "name": "OrcaRouter"
+  "name": "OrcaRouter",
+  "our_keys": "our key sk-orca-KNV... free tier, 429s under load (free_rate_limited)."
  },
  "pollinations": {
   "base": "https://text.pollinations.ai/openai",
