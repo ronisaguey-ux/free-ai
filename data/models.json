@@ -381,6 +381,43 @@
   "model": "deepseek-ai/DeepSeek-V4-Flash",
   "base": "https://api-inference.bitdeer.ai/v1",
   "key_env": "BITDEER_API_KEY",
-  "no_key": false
+  "no_key": false,
+  "note": "fastest, median ~1s"
+ },
+ {
+  "rank": 49,
+  "provider": "bitdeer",
+  "model": "deepseek-ai/DeepSeek-V4.1-Flash",
+  "base": "https://api-inference.bitdeer.ai/v1",
+  "key_env": "BITDEER_API_KEY",
+  "no_key": false,
+  "note": "was 'insufficient balance' on the old voucher"
+ },
+ {
+  "rank": 50,
+  "provider": "bitdeer",
+  "model": "zai-org/GLM-5.3-Flash",
+  "base": "https://api-inference.bitdeer.ai/v1",
+  "key_env": "BITDEER_API_KEY",
+  "no_key": false,
+  "note": "non-reasoning GLM"
+ },
+ {
+  "rank": 51,
+  "provider": "bitdeer",
+  "model": "Qwen/Qwen3.8-27B",
+  "base": "https://api-inference.bitdeer.ai/v1",
+  "key_env": "BITDEER_API_KEY",
+  "no_key": false,
+  "note": "answering"
+ },
+ {
+  "rank": 52,
+  "provider": "bitdeer",
+  "model": "zai-org/GLM-5.3",
+  "base": "https://api-inference.bitdeer.ai/v1",
+  "key_env": "BITDEER_API_KEY",
+  "no_key": false,
+  "note": "REASONING - needs max_tokens >= ~3000 or content is empty"
  }
 ]

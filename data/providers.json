@@ -35,7 +35,7 @@
   "key_env": "BITDEER_API_KEY",
   "key_url": "https://www.bitdeer.ai/",
   "name": "Bitdeer AI Cloud",
-  "our_keys": "our key AIni... $5 voucher, SCOPE-LIMITED: only deepseek-ai/DeepSeek-V4-Flash bills. V4.1 returns insufficient balance; GLM/Qwen bill but return empty. Send User-Agent: curl/8.5.0 - Cloudflare 403s python-urllib."
+  "our_keys": "our key lives at ~/.config/orch/bitdeer_key.txt (0600) and in BITDEER_API_KEY. Must send User-Agent: curl/8.5.0 - Cloudflare 403s python-urllib. Measured 2026-10-05 on the refreshed key: 5 of 8 catalogue models answer; BAAI/bge-* are embeddings and seedream is an image model, not chat."
  },
  "cerebras": {
   "base": "https://api.cerebras.ai/v1",
