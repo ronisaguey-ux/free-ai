@@ -78,6 +78,10 @@ const rotate = {};
  *      when its key is actually configured.
  */
 function loadModels() {
+  // `models` in config.json is a FULL OVERRIDE - the caller is naming the exact chain, so
+  // nothing is merged on top. This is what the test harness uses, and it is the escape
+  // hatch for anyone who wants a chain that is not the shipped one.
+  if (cfg.models) return cfg.models;
   const keyless = JSON.parse(fs.readFileSync(path.join(ROOT, 'data', 'models.json'), 'utf8'));
   let catalogue = {};
   try { catalogue = JSON.parse(fs.readFileSync(path.join(ROOT, 'data', 'providers.json'), 'utf8')); }
