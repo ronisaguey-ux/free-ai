@@ -1,0 +1,8 @@
+{
+  "swept_at": "2026-10-06",
+  "source": "OmniRoute live registry, /home/roni/Roni_workspace/OmniRoute/open-sse/config/providers/registry (250 providers, 242 base URLs)",
+  "method": "GET <base>/models with no credential, then POST /chat/completions with the first 4 ids of every list that answered",
+  "public_model_lists_no_credential": 54,
+  "of_those_that_can_also_chat_keyless": 0,
+  "verdict": "A public /models list is NOT keyless access. 49 of the 54 return 401/402/403 on chat; the other 5 serve no chat id. 0 new keyless endpoints found."
+}
