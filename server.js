@@ -49,6 +49,7 @@ function loadConfig() {
     keys: cfg.keys || {},
     // models: an explicit list to override data/models.json. See README "add your own".
     models: cfg.models || null,
+    providers: cfg.providers || {},
     backoffMin: cfg.backoffMin ?? BACKOFF_STEP_MIN,
   };
 }
@@ -64,11 +65,69 @@ function keyFor(provider) {
 const cfg = loadConfig();
 const rotate = {};
 
+/**
+ * The chain, in three parts.
+ *
+ *   1. `data/models.json` - THE DEFAULT, every entry KEYLESS. Each was checked with a real
+ *      completion before being added. This is what makes the router work with no
+ *      configuration at all, and it is why no provider of ours is baked in: if it needs a
+ *      key, it does not belong in the default chain.
+ *   2. `cfg.providers` - providers the USER declared in their own config.json, with a key.
+ *   3. `data/providers.json` - the catalogue, so adding an optional provider is one `keys`
+ *      line instead of a hand-written model list. A catalogue entry joins the chain ONLY
+ *      when its key is actually configured.
+ */
 function loadModels() {
-  if (cfg.models) return cfg.models;
-  return JSON.parse(fs.readFileSync(path.join(ROOT, 'data', 'models.json'), 'utf8'));
+  const keyless = JSON.parse(fs.readFileSync(path.join(ROOT, 'data', 'models.json'), 'utf8'));
+  let catalogue = {};
+  try { catalogue = JSON.parse(fs.readFileSync(path.join(ROOT, 'data', 'providers.json'), 'utf8')); }
+  catch { catalogue = {}; }
+
+  const out = [...keyless];
+  const seen = new Set(out.map((m) => `${m.provider}\u0000${m.model}`));
+  let rank = 1000;
+  const add = (provider, base, models, extra = {}) => {
+    for (const id of models || []) {
+      const k = `${provider}\u0000${id}`;
+      if (seen.has(k)) continue;
+      seen.add(k);
+      out.push({ rank: rank++, provider, model: id, base, key_env: `${String(provider).toUpperCase()}_API_KEY`, ...extra });
+    }
+  };
+
+  for (const [pid, entry] of Object.entries(cfg.providers || {})) {
+    if (!entry || typeof entry !== 'object') continue;
+    if (!cfg.keys[pid] && !entry.no_key) continue;
+    add(pid, entry.base, entry.models, entry.no_key ? { no_key: true } : {});
+  }
+
+  for (const [pid, entry] of Object.entries(catalogue)) {
+    if (!entry || typeof entry !== 'object') continue;
+    if (!(entry.models || []).length) continue;
+    if (!cfg.keys[pid] && !entry.free_no_key) continue;
+    add(pid, entry.base, entry.models, entry.free_no_key ? { no_key: true } : {});
+  }
+
+  return out;
 }
-const MODELS = loadModels();
+
+// free-ai carries three `oculus_webchat` entries pointing at the engine's OWN deepseek
+// gateways (127.0.0.1:8080/8081/8083). Measured under the engine's own load: every call to
+// them died `fetch failed` / `timeout after 180s`, thousands in a row, while `curl
+// /health` on those same gateways returned 200. The engine reached them directly without
+// trouble - it was the router in the middle that could not.
+//
+// It is also redundant: the engine already holds `deepseek`, `deepseek2` and `deepseek4` as
+// lanes of its own, so routing those same gateways through free-ai buys nothing and costs
+// a full timeout budget per attempt (the failure path measured 300s per draw, which is
+// what starved the pool).
+//
+// So they are dropped from the chain by default. FREEAI_WEBCHAT=1 puts them back for a
+// caller that has no direct access to those gateways.
+const _allModels = loadModels();
+const MODELS = process.env.FREEAI_WEBCHAT === '1'
+  ? _allModels
+  : _allModels.filter((m) => m.provider !== 'oculus_webchat');
 
 // ── state ─────────────────────────────────────────────────────────────────────
 const STATE_FILE = process.env.FREEAI_STATE || path.join(ROOT, 'state.json');
@@ -95,14 +154,56 @@ const now = () => Date.now();
 const cooling = (m) => s(m).until > now();
 const minsLeft = (m) => Math.max(0, Math.ceil((s(m).until - now()) / 60000));
 
+/**
+ * Price a failure before benching the model.
+ *
+ * 10-05 REDESIGN. The old rule was flat: every failure cooled the model for
+ * `streak * 15` minutes, so a single transient hiccup benched an upstream for a quarter
+ * of an hour. Measured under the engine's load: all 57 configured candidates ended up
+ * cooling at once and the router answered
+ *   http 503 {"message":"every model is cooling down","type":"no_model_available"}
+ * while an idle probe of the same router answered 24 concurrent requests with 92% valid
+ * edits. The models were fine - the bench was the outage.
+ *
+ * Classify, then price:
+ *   TRANSIENT (timeout, 5xx, 408, connection reset, overloaded/empty)
+ *       -> DO NOT bench. Count the failure and try the next candidate. A provider that is
+ *          briefly overloaded is back in seconds; the chain exists to route around it.
+ *   CAPACITY (429, quota, rate limit, capacity)
+ *       -> a real "come back later": cool for BACKOFF_STEP_MIN x streak, capped. This is
+ *          the only failure that deserves the old linear ladder.
+ *   PERMANENT (401/402/403/404, model unavailable/retired, invalid key)
+ *       -> park for the day. Retrying can never fix it.
+ *
+ * A success still resets the streak to zero.
+ */
 function penalise(m, why) {
   const st = s(m);
   st.streak += 1;
   st.fails += 1;
   st.lastError = why;
-  st.until = now() + Math.min(st.streak * cfg.backoffMin, MAX_BACKOFF_MIN) * 60000;
+  const low = String(why).toLowerCase();
+  const permanent = /\b(401|402|403|404)\b/.test(low)
+    || /model[_ -]?(unavailable|not[_ -]?found|deprecat|retired|invalid)/.test(low)
+    || /invalid api key|unauthorized|insufficient (balance|quota|credits)/.test(low);
+  const capacity = /\b(429|408)\b/.test(low)
+    || /rate[_ -]?limit|too frequent|quota|capacity/.test(low);
+  let mins;
+  if (permanent) {
+    mins = MAX_BACKOFF_MIN;
+  } else if (capacity) {
+    mins = Math.min(st.streak * cfg.backoffMin, MAX_BACKOFF_MIN);
+  } else {
+    // TRANSIENT: no cooldown. Leave `until` untouched so the next request may pick it.
+    st.until = 0;
+    saveState();
+    console.error(`[free-ai] ${m.provider}/${m.model} -> transient (streak ${st.streak}), NO cooldown: ${why}`);
+    return;
+  }
+  st.until = now() + mins * 60000;
   saveState();
-  console.error(`[free-ai] ${m.provider}/${m.model} -> cooling ${st.streak * cfg.backoffMin}m (streak ${st.streak}): ${why}`);
+  console.error(`[free-ai] ${m.provider}/${m.model} -> cooling ${mins}m (streak ${st.streak}, `
+    + `${permanent ? 'PERMANENT' : 'capacity'}): ${why}`);
 }
 
 function succeeded(m) {
@@ -146,6 +247,10 @@ function safeUpstreamUrl(base) {
   if (h === '169.254.169.254' || h === 'metadata.google.internal' || h === '0.0.0.0') return null;
   if (/^169\.254\./.test(h) || /^fe80:/i.test(h)) return null;
   return u.origin + u.pathname.replace(/\/$/, '') + '/chat/completions';
+}
+
+function _modelKeyOf(m, key) {
+  return (m && m.anon_key) || key;
 }
 
 function upstream(m, body, key, signal) {
@@ -208,10 +313,28 @@ async function chat(body, cfgRes) {
   for (const m of candidates) {
     const key = keyFor(m.provider);
     const ctl = new AbortController();
-    const t = setTimeout(() => ctl.abort(), Number(process.env.FREEAI_TIMEOUT_MS || 180000));
+    // 10-05: a per-model timeout, because one number cannot be right for every upstream.
+    // The local webchat gateways legitimately need up to 400s (they wait on a real
+    // browser), while a remote API answers in seconds. One flat 180s meant the
+    // oculus_webchat entries timed out on EVERY call - measured 4 in a row at exactly
+    // 180.001s - which benched nothing (they are transient now) but wasted a full 3
+    // minutes of the router's time on each attempt and made the router report
+    // "every model is cooling down" to callers.
+    // A model may carry its own `timeout_ms`; else the provider prefix decides.
+    // 10-05: the REMOTE default is 45s, not 180s. Measured under the engine's load: the
+    // router's own median round trip is 3.3s, but 34 draws in 45 minutes spent over 250s
+    // and 66 spent over 100s - all of it waiting on a candidate that had already gone
+    // quiet. A free endpoint that has not answered in 45s is not slow, it is gone, and the
+    // chain should move to the next candidate while there is still budget left to use it.
+    // The local webchat gateways keep their 420s, because there the browser really is
+    // thinking and a long wait is the correct behaviour.
+    const _toMs = Number(m.timeout_ms
+      || (m.provider === 'oculus_webchat' ? 420000 : 0)
+      || process.env.FREEAI_TIMEOUT_MS || 45000);
+    const t = setTimeout(() => ctl.abort(), _toMs);
     const started = now();
     try {
-      const res = await upstream(m, body, key, ctl.signal);
+      const res = await upstream(m, body, _modelKeyOf(m, key), ctl.signal);
       clearTimeout(t);
 
       if (res.ok) {

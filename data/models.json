@@ -1,740 +1,123 @@
 [
  {
   "rank": 1,
-  "provider": "deepseek",
-  "model": "deepseek-chat",
-  "base": "https://api.deepseek.com",
-  "key_env": "DEEPSEEK_API_KEY",
-  "no_key": false
+  "provider": "kilo",
+  "model": "kilo-auto/free",
+  "base": "https://api.kilo.ai/api/gateway",
+  "key_env": null,
+  "no_key": true,
+  "timeout_ms": 60000,
+  "verified": "2026-10-06"
  },
  {
   "rank": 2,
-  "provider": "deepseek",
-  "model": "deepseek-reasoner",
-  "base": "https://api.deepseek.com",
-  "key_env": "DEEPSEEK_API_KEY",
-  "no_key": false
+  "provider": "kilo",
+  "model": "stepfun/step-3.7-flash:free",
+  "base": "https://api.kilo.ai/api/gateway",
+  "key_env": null,
+  "no_key": true,
+  "timeout_ms": 60000,
+  "verified": "2026-10-06"
  },
  {
   "rank": 3,
-  "provider": "groq",
-  "model": "moonshotai/kimi-k2-instruct",
-  "base": "https://api.groq.com/openai/v1",
-  "key_env": "GROQ_API_KEY",
-  "no_key": false
+  "provider": "kilo",
+  "model": "poolside/laguna-s-2.1:free",
+  "base": "https://api.kilo.ai/api/gateway",
+  "key_env": null,
+  "no_key": true,
+  "timeout_ms": 60000,
+  "verified": "2026-10-06"
  },
  {
   "rank": 4,
-  "provider": "cerebras",
-  "model": "qwen-3-32b",
-  "base": "https://api.cerebras.ai/v1",
-  "key_env": "CEREBRAS_API_KEY",
-  "no_key": false
+  "provider": "kilo",
+  "model": "inclusionai/ling-3.1-flash",
+  "base": "https://api.kilo.ai/api/gateway",
+  "key_env": null,
+  "no_key": true,
+  "timeout_ms": 60000,
+  "verified": "2026-10-06"
  },
  {
   "rank": 5,
-  "provider": "groq",
-  "model": "llama-3.3-70b-versatile",
-  "base": "https://api.groq.com/openai/v1",
-  "key_env": "GROQ_API_KEY",
-  "no_key": false
+  "provider": "kilo",
+  "model": "dots-studio/dots-3-note-preview:free",
+  "base": "https://api.kilo.ai/api/gateway",
+  "key_env": null,
+  "no_key": true,
+  "timeout_ms": 60000,
+  "verified": "2026-10-06"
  },
  {
   "rank": 6,
-  "provider": "cerebras",
-  "model": "llama-3.3-70b",
-  "base": "https://api.cerebras.ai/v1",
-  "key_env": "CEREBRAS_API_KEY",
-  "no_key": false
+  "provider": "kilo",
+  "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+  "base": "https://api.kilo.ai/api/gateway",
+  "key_env": null,
+  "no_key": true,
+  "timeout_ms": 120000,
+  "verified": "2026-10-06"
  },
  {
   "rank": 7,
-  "provider": "gemini",
-  "model": "gemini-2.0-flash",
-  "base": "https://generativelanguage.googleapis.com/v1beta/openai",
-  "key_env": "GEMINI_API_KEY",
-  "no_key": false
+  "provider": "llm7",
+  "model": "default",
+  "base": "https://api.llm7.io/v1",
+  "key_env": null,
+  "no_key": true,
+  "timeout_ms": 90000,
+  "verified": "2026-10-06"
  },
  {
   "rank": 8,
-  "provider": "sambanova",
-  "model": "Meta-Llama-3.3-70B-Instruct",
-  "base": "https://api.sambanova.ai/v1",
-  "key_env": "SAMBANOVA_API_KEY",
-  "no_key": false
+  "provider": "llm7",
+  "model": "fast",
+  "base": "https://api.llm7.io/v1",
+  "key_env": null,
+  "no_key": true,
+  "timeout_ms": 90000,
+  "verified": "2026-10-06"
  },
  {
   "rank": 9,
-  "provider": "nvidia_nim",
-  "model": "meta/llama-3.3-70b-instruct",
-  "base": "https://integrate.api.nvidia.com/v1",
-  "key_env": "NVIDIA_NIM_API_KEY",
-  "no_key": false
+  "provider": "aihorde",
+  "model": "koboldcpp/gemma-3-4b-it-heretic",
+  "base": "https://oai.aihorde.net/v1",
+  "key_env": null,
+  "no_key": true,
+  "timeout_ms": 180000,
+  "anon_key": "0000000000",
+  "verified": "2026-10-06"
  },
  {
   "rank": 10,
-  "provider": "open_router",
-  "model": "deepseek/deepseek-chat-v3-0324:free",
-  "base": "https://openrouter.ai/api/v1",
-  "key_env": "OPENROUTER_API_KEY",
-  "no_key": false
+  "provider": "llm7",
+  "model": "DeepSeek-V4-Flash-0731",
+  "base": "https://api.llm7.io/v1",
+  "key_env": null,
+  "no_key": true,
+  "timeout_ms": 90000,
+  "verified": "2026-10-06"
  },
  {
   "rank": 11,
-  "provider": "groq",
-  "model": "deepseek-r1-distill-llama-70b",
-  "base": "https://api.groq.com/openai/v1",
-  "key_env": "GROQ_API_KEY",
-  "no_key": false
+  "provider": "pollinations",
+  "model": "openai-fast",
+  "base": "https://text.pollinations.ai/openai",
+  "key_env": null,
+  "no_key": true,
+  "timeout_ms": 60000,
+  "verified": "2026-10-06"
  },
  {
   "rank": 12,
-  "provider": "sambanova",
-  "model": "DeepSeek-R1",
-  "base": "https://api.sambanova.ai/v1",
-  "key_env": "SAMBANOVA_API_KEY",
-  "no_key": false
- },
- {
-  "rank": 13,
-  "provider": "nvidia_nim",
-  "model": "deepseek-ai/deepseek-r1",
-  "base": "https://integrate.api.nvidia.com/v1",
-  "key_env": "NVIDIA_NIM_API_KEY",
-  "no_key": false
- },
- {
-  "rank": 14,
-  "provider": "open_router",
-  "model": "qwen/qwen-2.5-72b-instruct:free",
-  "base": "https://openrouter.ai/api/v1",
-  "key_env": "OPENROUTER_API_KEY",
-  "no_key": false
- },
- {
-  "rank": 15,
-  "provider": "github_models",
-  "model": "gpt-4o-mini",
-  "base": "https://models.github.ai/inference",
-  "key_env": "GITHUB_TOKEN",
-  "no_key": false
- },
- {
-  "rank": 16,
-  "provider": "gemini",
-  "model": "gemini-2.0-flash-lite",
-  "base": "https://generativelanguage.googleapis.com/v1beta/openai",
-  "key_env": "GEMINI_API_KEY",
-  "no_key": false
- },
- {
-  "rank": 17,
-  "provider": "cerebras",
-  "model": "llama3.1-8b",
-  "base": "https://api.cerebras.ai/v1",
-  "key_env": "CEREBRAS_API_KEY",
-  "no_key": false
- },
- {
-  "rank": 18,
-  "provider": "groq",
-  "model": "qwen/qwen3-32b",
-  "base": "https://api.groq.com/openai/v1",
-  "key_env": "GROQ_API_KEY",
-  "no_key": false
- },
- {
-  "rank": 19,
-  "provider": "mistral",
-  "model": "mistral-small-latest",
-  "base": "https://api.mistral.ai/v1",
-  "key_env": "MISTRAL_API_KEY",
-  "no_key": false
- },
- {
-  "rank": 20,
-  "provider": "together",
-  "model": "meta-llama/Llama-3.3-70B-Instruct-Turbo-Free",
-  "base": "https://api.together.ai/v1",
-  "key_env": "TOGETHER_API_KEY",
-  "no_key": false
- },
- {
-  "rank": 21,
-  "provider": "nvidia_nim",
-  "model": "qwen/qwen2.5-coder-32b-instruct",
-  "base": "https://integrate.api.nvidia.com/v1",
-  "key_env": "NVIDIA_NIM_API_KEY",
-  "no_key": false
- },
- {
-  "rank": 22,
-  "provider": "open_router",
-  "model": "meta-llama/llama-3.3-70b-instruct:free",
-  "base": "https://openrouter.ai/api/v1",
-  "key_env": "OPENROUTER_API_KEY",
-  "no_key": false
- },
- {
-  "rank": 23,
-  "provider": "deepinfra",
-  "model": "meta-llama/Llama-3.3-70B-Instruct",
-  "base": "https://api.deepinfra.com/v1/openai",
-  "key_env": "DEEPINFRA_API_KEY",
-  "no_key": false
- },
- {
-  "rank": 24,
-  "provider": "siliconflow",
-  "model": "Qwen/Qwen2.5-72B-Instruct",
-  "base": "https://api.siliconflow.com/v1",
-  "key_env": "SILICONFLOW_API_KEY",
-  "no_key": false
- },
- {
-  "rank": 25,
-  "provider": "nebius",
-  "model": "meta-llama/Llama-3.3-70B-Instruct",
-  "base": "https://api.tokenfactory.nebius.com/v1",
-  "key_env": "NEBIUS_API_KEY",
-  "no_key": false
- },
- {
-  "rank": 26,
-  "provider": "chutes",
-  "model": "deepseek-ai/DeepSeek-V3",
-  "base": "https://llm.chutes.ai/v1",
-  "key_env": "CHUTES_API_KEY",
-  "no_key": false
- },
- {
-  "rank": 27,
-  "provider": "github_models",
-  "model": "gpt-4o",
-  "base": "https://models.github.ai/inference",
-  "key_env": "GITHUB_TOKEN",
-  "no_key": false
- },
- {
-  "rank": 28,
-  "provider": "cloudflare_ai",
-  "model": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
-  "base": "https://api.cloudflare.com/client/v4/accounts/{account_id}/ai/v1",
-  "key_env": "CLOUDFLARE_API_TOKEN",
-  "no_key": false
- },
- {
-  "rank": 29,
-  "provider": "zai",
-  "model": "glm-4.5-flash",
-  "base": "https://api.z.ai/api/paas/v4",
-  "key_env": "ZAI_API_KEY",
-  "no_key": false
- },
- {
-  "rank": 30,
-  "provider": "mistral",
-  "model": "open-mistral-nemo",
-  "base": "https://api.mistral.ai/v1",
-  "key_env": "MISTRAL_API_KEY",
-  "no_key": false
- },
- {
-  "rank": 31,
-  "provider": "groq",
-  "model": "llama-3.1-8b-instant",
-  "base": "https://api.groq.com/openai/v1",
-  "key_env": "GROQ_API_KEY",
-  "no_key": false
- },
- {
-  "rank": 32,
-  "provider": "sambanova",
-  "model": "Meta-Llama-3.1-8B-Instruct",
-  "base": "https://api.sambanova.ai/v1",
-  "key_env": "SAMBANOVA_API_KEY",
-  "no_key": false
- },
- {
-  "rank": 33,
-  "provider": "nvidia_nim",
-  "model": "meta/llama-3.1-8b-instruct",
-  "base": "https://integrate.api.nvidia.com/v1",
-  "key_env": "NVIDIA_NIM_API_KEY",
-  "no_key": false
- },
- {
-  "rank": 34,
-  "provider": "deepinfra",
-  "model": "meta-llama/Meta-Llama-3.1-8B-Instruct",
-  "base": "https://api.deepinfra.com/v1/openai",
-  "key_env": "DEEPINFRA_API_KEY",
-  "no_key": false
- },
- {
-  "rank": 35,
-  "provider": "siliconflow",
-  "model": "Qwen/Qwen2.5-7B-Instruct",
-  "base": "https://api.siliconflow.com/v1",
-  "key_env": "SILICONFLOW_API_KEY",
-  "no_key": false
- },
- {
-  "rank": 36,
-  "provider": "together",
-  "model": "meta-llama/Meta-Llama-3.1-8B-Instruct-Turbo",
-  "base": "https://api.together.ai/v1",
-  "key_env": "TOGETHER_API_KEY",
-  "no_key": false
- },
- {
-  "rank": 37,
-  "provider": "gemini",
-  "model": "gemini-1.5-flash",
-  "base": "https://generativelanguage.googleapis.com/v1beta/openai",
-  "key_env": "GEMINI_API_KEY",
-  "no_key": false
- },
- {
-  "rank": 38,
-  "provider": "mistral",
-  "model": "open-mistral-7b",
-  "base": "https://api.mistral.ai/v1",
-  "key_env": "MISTRAL_API_KEY",
-  "no_key": false
- },
- {
-  "rank": 39,
-  "provider": "nebius",
-  "model": "Qwen/Qwen2.5-32B-Instruct",
-  "base": "https://api.tokenfactory.nebius.com/v1",
-  "key_env": "NEBIUS_API_KEY",
-  "no_key": false
- },
- {
-  "rank": 40,
-  "provider": "github_models",
-  "model": "Phi-4",
-  "base": "https://models.github.ai/inference",
-  "key_env": "GITHUB_TOKEN",
-  "no_key": false
- },
- {
-  "rank": 41,
-  "provider": "llm7",
-  "model": "gpt-4o-mini",
-  "base": "https://api.llm7.io/v1",
-  "key_env": "LLM7_API_KEY",
-  "no_key": true
- },
- {
-  "rank": 42,
-  "provider": "llm7",
-  "model": "deepseek-r1",
-  "base": "https://api.llm7.io/v1",
-  "key_env": "LLM7_API_KEY",
-  "no_key": true
- },
- {
-  "rank": 43,
-  "provider": "pollinations",
-  "model": "openai",
-  "base": "https://text.pollinations.ai/openai",
-  "key_env": null,
-  "no_key": true
- },
- {
-  "rank": 44,
-  "provider": "aihorde",
-  "model": "koboldai/LLaMA2-13B-Tiefighter",
-  "base": "https://oai.aihorde.net/v1",
-  "key_env": "AIHORDE_API_KEY",
-  "no_key": true
- },
- {
-  "rank": 45,
-  "provider": "ollama",
-  "model": "llama3.3",
-  "base": "http://localhost:11434",
-  "key_env": null,
-  "no_key": false
- },
- {
-  "rank": 47,
-  "provider": "orcarouter",
-  "model": "orcarouter/free",
-  "base": "https://api.orcarouter.ai/v1",
-  "key_env": "ORCAROUTER_API_KEY",
-  "no_key": false,
-  "note": "the only id this key can call; fusion/fusion-flash/fusion-mini are 403 model_access_denied, auto is 402 out of credits"
- },
- {
-  "rank": 48,
-  "provider": "bitdeer",
-  "model": "deepseek-ai/DeepSeek-V4-Flash",
-  "base": "https://api-inference.bitdeer.ai/v1",
-  "key_env": "BITDEER_API_KEY",
-  "no_key": false,
-  "note": "fastest, median ~1s"
- },
- {
-  "rank": 49,
-  "provider": "bitdeer",
-  "model": "deepseek-ai/DeepSeek-V4.1-Flash",
-  "base": "https://api-inference.bitdeer.ai/v1",
-  "key_env": "BITDEER_API_KEY",
-  "no_key": false,
-  "note": "was 'insufficient balance' on the old voucher"
- },
- {
-  "rank": 50,
-  "provider": "bitdeer",
-  "model": "zai-org/GLM-5.3-Flash",
-  "base": "https://api-inference.bitdeer.ai/v1",
-  "key_env": "BITDEER_API_KEY",
-  "no_key": false,
-  "note": "non-reasoning GLM"
- },
- {
-  "rank": 51,
-  "provider": "bitdeer",
-  "model": "Qwen/Qwen3.8-27B",
-  "base": "https://api-inference.bitdeer.ai/v1",
-  "key_env": "BITDEER_API_KEY",
-  "no_key": false,
-  "note": "answering"
- },
- {
-  "rank": 52,
-  "provider": "bitdeer",
-  "model": "zai-org/GLM-5.3",
-  "base": "https://api-inference.bitdeer.ai/v1",
-  "key_env": "BITDEER_API_KEY",
-  "no_key": false,
-  "note": "REASONING - needs max_tokens >= ~3000 or content is empty"
- },
- {
-  "rank": 60,
-  "provider": "oculus_webchat",
-  "model": "anymodel",
-  "base": "http://127.0.0.1:8080/v1",
-  "no_key": true,
-  "key_env": "",
-  "note": "deepseek webchat gateway"
- },
- {
-  "rank": 61,
-  "provider": "oculus_webchat",
-  "model": "anymodel",
-  "base": "http://127.0.0.1:8081/v1",
-  "no_key": true,
-  "key_env": "",
-  "note": "deepseek2 webchat gateway"
- },
- {
-  "rank": 62,
-  "provider": "oculus_webchat",
-  "model": "anymodel",
-  "base": "http://127.0.0.1:8083/v1",
-  "no_key": true,
-  "key_env": "",
-  "note": "deepseek4 webchat gateway"
- },
- {
-  "rank": 63,
-  "provider": "open_router",
-  "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
-  "base": "https://openrouter.ai/api/v1",
-  "no_key": false,
-  "key_env": "OPENROUTER_API_KEY",
-  "note": "openrouter lane model 1"
- },
- {
-  "rank": 64,
-  "provider": "open_router",
-  "model": "nex-agi/nex-n2.5-pro:free",
-  "base": "https://openrouter.ai/api/v1",
-  "no_key": false,
-  "key_env": "OPENROUTER_API_KEY",
-  "note": "openrouter lane model 2"
- },
- {
-  "rank": 65,
-  "provider": "dahl",
-  "model": "MiniMaxAI/MiniMax-M2.7",
-  "base": "https://inference.dahl.global/v1",
-  "no_key": false,
-  "key_env": "DAHL_API_KEY",
-  "note": "dahl lane model"
- },
- {
-  "rank": 200,
-  "provider": "api_airforce",
-  "model": "api-airforce-default",
-  "base": "https://api.airforce/v1",
-  "key_env": "API_AIRFORCE_API_KEY",
-  "no_key": false,
-  "note": ""
- },
- {
-  "rank": 201,
-  "provider": "bluesminds",
-  "model": "bluesminds-default",
-  "base": "https://api.bluesminds.com/v1",
-  "key_env": "BLUESMINDS_API_KEY",
-  "no_key": false,
-  "note": ""
- },
- {
-  "rank": 202,
-  "provider": "bazaarlink",
-  "model": "bazaarlink-default",
-  "base": "https://bazaarlink.ai/api/v1",
-  "key_env": "BAZAARLINK_API_KEY",
-  "no_key": false,
-  "note": ""
- },
- {
-  "rank": 203,
-  "provider": "cohere",
-  "model": "cohere-default",
-  "base": "https://api.cohere.com/compatibility/v1",
-  "key_env": "COHERE_API_KEY",
-  "no_key": false,
-  "note": ""
- },
- {
-  "rank": 204,
-  "provider": "morph",
-  "model": "morph-default",
-  "base": "https://api.morphllm.com/v1",
-  "key_env": "MORPH_API_KEY",
-  "no_key": false,
-  "note": ""
- },
- {
-  "rank": 205,
-  "provider": "huggingface",
-  "model": "huggingface-default",
-  "base": "https://router.huggingface.co/v1",
-  "key_env": "HUGGINGFACE_API_KEY",
-  "no_key": false,
-  "note": ""
- },
- {
-  "rank": 206,
-  "provider": "baichuan",
-  "model": "baichuan-default",
-  "base": "https://api.baichuan-ai.com/v1",
-  "key_env": "BAICHUAN_API_KEY",
-  "no_key": false,
-  "note": ""
- },
- {
-  "rank": 207,
-  "provider": "baidu",
-  "model": "baidu-default",
-  "base": "https://qianfan.baidubce.com/v2",
-  "key_env": "BAIDU_API_KEY",
-  "no_key": false,
-  "note": ""
- },
- {
-  "rank": 208,
-  "provider": "bytez",
-  "model": "bytez-default",
-  "base": "https://api.bytez.com/models/v2/openai/v1",
-  "key_env": "BYTEZ_API_KEY",
-  "no_key": false,
-  "note": ""
- },
- {
-  "rank": 209,
-  "provider": "doubao",
-  "model": "doubao-default",
-  "base": "https://ark.cn-beijing.volces.com/api/v3",
-  "key_env": "DOUBAO_API_KEY",
-  "no_key": false,
-  "note": ""
- },
- {
-  "rank": 210,
-  "provider": "freemodel_dev",
-  "model": "freemodel-dev-default",
-  "base": "https://api.freemodel.dev/v1",
-  "key_env": "FREEMODEL_DEV_API_KEY",
-  "no_key": false,
-  "note": ""
- },
- {
-  "rank": 211,
-  "provider": "hyperbolic",
-  "model": "hyperbolic-default",
-  "base": "https://api.hyperbolic.xyz/v1",
-  "key_env": "HYPERBOLIC_API_KEY",
-  "no_key": false,
-  "note": ""
- },
- {
-  "rank": 212,
-  "provider": "inference_net",
-  "model": "inference-net-default",
-  "base": "https://api.inference.net/v1",
-  "key_env": "INFERENCE_NET_API_KEY",
-  "no_key": false,
-  "note": ""
- },
- {
-  "rank": 213,
-  "provider": "liquid",
-  "model": "liquid-default",
-  "base": "https://inference.liquid.ai/v1",
-  "key_env": "LIQUID_API_KEY",
-  "no_key": false,
-  "note": ""
- },
- {
-  "rank": 214,
-  "provider": "monsterapi",
-  "model": "monsterapi-default",
-  "base": "https://api.monsterapi.ai/v1",
-  "key_env": "MONSTERAPI_API_KEY",
-  "no_key": false,
-  "note": ""
- },
- {
-  "rank": 215,
-  "provider": "nous_research",
-  "model": "nous-research-default",
-  "base": "https://inference-api.nousresearch.com/v1",
-  "key_env": "NOUS_RESEARCH_API_KEY",
-  "no_key": false,
-  "note": ""
- },
- {
-  "rank": 216,
-  "provider": "novita",
-  "model": "novita-default",
-  "base": "https://api.novita.ai/openai/v1",
-  "key_env": "NOVITA_API_KEY",
-  "no_key": false,
-  "note": ""
- },
- {
-  "rank": 217,
-  "provider": "nscale",
-  "model": "nscale-default",
-  "base": "https://inference.api.nscale.com/v1",
-  "key_env": "NSCALE_API_KEY",
-  "no_key": false,
-  "note": ""
- },
- {
-  "rank": 218,
-  "provider": "ollama_cloud",
-  "model": "ollama-cloud-default",
-  "base": "https://ollama.com/v1",
-  "key_env": "OLLAMA_CLOUD_API_KEY",
-  "no_key": false,
-  "note": ""
- },
- {
-  "rank": 219,
-  "provider": "pollinations",
-  "model": "pollinations-default",
-  "base": "https://gen.pollinations.ai/v1",
-  "key_env": "POLLINATIONS_API_KEY",
-  "no_key": true,
-  "note": ""
- },
- {
-  "rank": 220,
-  "provider": "predibase",
-  "model": "predibase-default",
-  "base": "https://serving.app.predibase.com/v1",
-  "key_env": "PREDIBASE_API_KEY",
-  "no_key": false,
-  "note": ""
- },
- {
-  "rank": 221,
-  "provider": "publicai",
-  "model": "publicai-default",
-  "base": "https://api.publicai.co/v1",
-  "key_env": "PUBLICAI_API_KEY",
-  "no_key": false,
-  "note": ""
- },
- {
-  "rank": 222,
-  "provider": "qoder",
-  "model": "qoder-default",
-  "base": "https://api.qoder.com/v1",
-  "key_env": "QODER_API_KEY",
-  "no_key": false,
-  "note": ""
- },
- {
-  "rank": 223,
-  "provider": "reka",
-  "model": "reka-default",
-  "base": "https://api.reka.ai/v1",
-  "key_env": "REKA_API_KEY",
-  "no_key": false,
-  "note": ""
- },
- {
-  "rank": 224,
-  "provider": "scaleway",
-  "model": "scaleway-default",
-  "base": "https://api.scaleway.ai/v1",
-  "key_env": "SCALEWAY_API_KEY",
-  "no_key": false,
-  "note": ""
- },
- {
-  "rank": 225,
-  "provider": "sensenova",
-  "model": "sensenova-default",
-  "base": "https://token.sensenova.cn/v1",
-  "key_env": "SENSENOVA_API_KEY",
-  "no_key": false,
-  "note": ""
- },
- {
-  "rank": 226,
-  "provider": "sparkdesk",
-  "model": "sparkdesk-default",
-  "base": "https://spark-api-open.xf-yun.com/v1",
-  "key_env": "SPARKDESK_API_KEY",
-  "no_key": false,
-  "note": ""
- },
- {
-  "rank": 227,
-  "provider": "stepfun",
-  "model": "stepfun-default",
-  "base": "https://api.stepfun.com/v1",
-  "key_env": "STEPFUN_API_KEY",
-  "no_key": false,
-  "note": ""
- },
- {
-  "rank": 228,
-  "provider": "tencent",
-  "model": "tencent-default",
-  "base": "https://api.hunyuan.cloud.tencent.com/v1",
-  "key_env": "TENCENT_API_KEY",
-  "no_key": false,
-  "note": ""
- },
- {
-  "rank": 229,
   "provider": "uncloseai",
-  "model": "uncloseai-default",
+  "model": "turboderp/Qwen3.8-27B-exl3",
   "base": "https://hermes.ai.unturf.com/v1",
-  "key_env": "UNCLOSEAI_API_KEY",
-  "no_key": false,
-  "note": ""
+  "key_env": null,
+  "no_key": true,
+  "timeout_ms": 120000,
+  "verified": "2026-10-06"
  }
 ]

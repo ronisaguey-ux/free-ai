@@ -1,37 +1,31 @@
 {
-  "_comment": "Copy to config.json. Every field is optional — the no-key providers work with an empty file. Add a key for any provider you have an account with and its models join the chain automatically.",
-
+  "_comment": "Copy to config.json (gitignored). EVERY FIELD IS OPTIONAL - the keyless chain in data/models.json serves with no config at all. Add a key below and that provider's models join the chain automatically; see data/providers.json for the full catalogue of 89 providers with base URLs and signup links.",
   "port": 8790,
   "host": "127.0.0.1",
-
-  "_keys_comment": "provider id -> key, or a LIST of keys which are rotated one per call",
-  "keys": {
+  "_keys_comment": "provider id -> key. A provider is only used once its key is here. A LIST of keys is rotated one per call.",
+  "keys": {},
+  "_keys_example": {
     "groq": "gsk_...",
     "gemini": "AIza...",
     "cerebras": "csk-...",
-    "sambanova": "....",
     "nvidia_nim": "nvapi-...",
-    "deepseek": "sk-...",
     "mistral": "...",
-    "open_router": "sk-or-...",
-    "together": "...",
+    "openrouter": "sk-or-...",
     "deepinfra": "...",
-    "siliconflow": "sk-...",
-    "nebius": "...",
-    "chutes": "...",
-    "zai": "...",
-    "github_models": "ghp_... (a GitHub token with the models scope)",
-    "cloudflare_ai": "...",
-
-    "_our_free_keys_comment": "our own free tiers - the values live in ~/.config/orch/pat.txt and ~/.claude/openrouter.token, never in this repo",
-    "open_router": "$(cat ~/.claude/openrouter.token)   # $1 cap, only :free ids work",
-    "orcarouter": "sk-orca-...   # free tier, 429s under load",
-    "bitdeer": "AIni...   # $5 voucher, only deepseek-ai/DeepSeek-V4-Flash bills"
+    "together": "..."
   },
-
   "_multi_key_example": "three Gemini keys become 4,500 requests/day instead of 1,500",
-  "keys_rotated_example": { "gemini": ["AIza-key1", "AIza-key2", "AIza-key3"] },
-
+  "_rotate_example": {
+    "gemini": [
+      "AIza-key1",
+      "AIza-key2",
+      "AIza-key3"
+    ]
+  },
+  "_providers_comment": "Only needed for a provider data/providers.json does not know. base + the model ids you want; it joins the chain when its key is in `keys`.",
+  "providers": {},
+  "_compression_comment": "off (default) | safe | balanced. Shrinks the prompt before it is sent. `safe` never touches line-numbered file content, template variables, URLs or an edit contract; `balanced` additionally strips comments and minifies JSON, but only from EARLIER turns - never the final user turn, which is where a quoted edit comes from.",
+  "compression": "off",
   "backoffMin": 15,
   "maxBackoffMin": 1440
 }

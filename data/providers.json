@@ -3,7 +3,8 @@
   "base": "https://apihub.agnes-ai.com/v1",
   "key_env": "AGNES_API_KEY",
   "key_url": "https://agnes-ai.com/",
-  "name": "Agnes AI"
+  "name": "Agnes AI",
+  "free_no_key": false
  },
  "aihorde": {
   "base": "https://oai.aihorde.net/v1",
@@ -16,13 +17,15 @@
   "base": "https://dashscope-intl.aliyuncs.com/compatible-mode/v1",
   "key_env": "ALIBABA_CLOUD_API_KEY",
   "key_url": "https://www.alibabacloud.com/help/en/model-studio/get-api-key",
-  "name": "Alibaba Cloud"
+  "name": "Alibaba Cloud",
+  "free_no_key": false
  },
  "anthropic": {
   "base": "https://api.anthropic.com/v1",
   "key_env": "ANTHROPIC_API_KEY",
   "key_url": "https://platform.claude.com/settings/keys",
-  "name": "Anthropic"
+  "name": "Anthropic",
+  "free_no_key": false
  },
  "api_airforce": {
   "base": "https://api.airforce/v1",
@@ -31,7 +34,8 @@
   "key_env": "API_AIRFORCE_API_KEY",
   "key_url": "",
   "name": "api-airforce",
-  "tos_risk": "caution"
+  "tos_risk": "caution",
+  "free_no_key": false
  },
  "baichuan": {
   "base": "https://api.baichuan-ai.com/v1",
@@ -40,7 +44,8 @@
   "key_env": "BAICHUAN_API_KEY",
   "key_url": "",
   "name": "baichuan",
-  "tos_risk": "ambiguous"
+  "tos_risk": "ambiguous",
+  "free_no_key": false
  },
  "baidu": {
   "base": "https://qianfan.baidubce.com/v2",
@@ -49,7 +54,8 @@
   "key_env": "BAIDU_API_KEY",
   "key_url": "",
   "name": "baidu",
-  "tos_risk": "caution"
+  "tos_risk": "caution",
+  "free_no_key": false
  },
  "bazaarlink": {
   "base": "https://bazaarlink.ai/api/v1",
@@ -58,20 +64,23 @@
   "key_env": "BAZAARLINK_API_KEY",
   "key_url": "",
   "name": "bazaarlink",
-  "tos_risk": "caution"
+  "tos_risk": "caution",
+  "free_no_key": false
  },
  "bedrock": {
   "base": "https://bedrock-mantle.us-east-1.api.aws/v1",
   "key_env": "AWS_BEARER_TOKEN_BEDROCK",
   "key_url": "https://console.aws.amazon.com/bedrock/",
-  "name": "Amazon Bedrock"
+  "name": "Amazon Bedrock",
+  "free_no_key": false
  },
  "bitdeer": {
   "base": "https://api-inference.bitdeer.ai/v1",
   "key_env": "BITDEER_API_KEY",
   "key_url": "https://www.bitdeer.ai/",
   "name": "Bitdeer AI Cloud",
-  "our_keys": "our key lives at ~/.config/orch/bitdeer_key.txt (0600) and in BITDEER_API_KEY. Must send User-Agent: curl/8.5.0 - Cloudflare 403s python-urllib. Measured 2026-10-05 on the refreshed key: 5 of 8 catalogue models answer; BAAI/bge-* are embeddings and seedream is an image model, not chat."
+  "our_keys": "our key lives at ~/.config/orch/bitdeer_key.txt (0600) and in BITDEER_API_KEY. Must send User-Agent: curl/8.5.0 - Cloudflare 403s python-urllib. Measured 2026-10-05 on the refreshed key: 5 of 8 catalogue models answer; BAAI/bge-* are embeddings and seedream is an image model, not chat.",
+  "free_no_key": false
  },
  "bluesminds": {
   "base": "https://api.bluesminds.com/v1",
@@ -80,7 +89,8 @@
   "key_env": "BLUESMINDS_API_KEY",
   "key_url": "",
   "name": "bluesminds",
-  "tos_risk": "ambiguous"
+  "tos_risk": "ambiguous",
+  "free_no_key": false
  },
  "bytez": {
   "base": "https://api.bytez.com/models/v2/openai/v1",
@@ -89,62 +99,72 @@
   "key_env": "BYTEZ_API_KEY",
   "key_url": "",
   "name": "bytez",
-  "tos_risk": "ambiguous"
+  "tos_risk": "ambiguous",
+  "free_no_key": false
  },
  "cerebras": {
   "base": "https://api.cerebras.ai/v1",
   "key_env": "CEREBRAS_API_KEY",
   "key_url": "https://cloud.cerebras.ai",
-  "name": "Cerebras"
+  "name": "Cerebras",
+  "free_no_key": false
  },
  "cheaperinference": {
   "base": "https://api.cheaperinference.com/v1",
   "key_env": "CHEAPER_INFERENCE_API_KEY",
   "key_url": "https://cheaperinference.com/signup",
-  "name": "Cheaper Inference"
+  "name": "Cheaper Inference",
+  "free_no_key": false
  },
  "chutes": {
   "base": "https://llm.chutes.ai/v1",
   "key_env": "CHUTES_API_KEY",
   "key_url": "https://chutes.ai/app/api",
-  "name": "Chutes"
+  "name": "Chutes",
+  "free_no_key": false
  },
  "cline_pass": {
   "base": "https://api.cline.bot/api/v1",
   "key_env": "CLINE_API_KEY",
   "key_url": "https://app.cline.bot",
-  "name": "ClinePass"
+  "name": "ClinePass",
+  "free_no_key": false
  },
  "cloudflare_ai": {
   "base": "https://api.cloudflare.com/client/v4/accounts/{account_id}/ai/v1",
   "key_env": "CLOUDFLARE_API_TOKEN",
   "key_url": "https://dash.cloudflare.com/profile/api-tokens",
-  "name": "Cloudflare Workers AI"
+  "name": "Cloudflare Workers AI",
+  "free_no_key": false
  },
  "cohere": {
   "base": "https://api.cohere.ai/compatibility/v1",
   "key_env": "COHERE_API_KEY",
   "key_url": "https://dashboard.cohere.com/api-keys",
-  "name": "Cohere"
+  "name": "Cohere",
+  "free_no_key": false
  },
  "dahl": {
   "base": "https://inference.dahl.global/v1",
   "key_env": "DAHL_API_KEY",
   "key_url": "https://inference.dahl.global/tokens",
   "name": "Dahl Global",
-  "our_keys": "our key at ~/.config/orch/dahl_key.txt (0600). A fresh token is mintable with an unauthenticated POST to https://inference.dahl.global/tokens, so an exhausted key is replaceable without an account."
+  "our_keys": "our key at ~/.config/orch/dahl_key.txt (0600). A fresh token is mintable with an unauthenticated POST to https://inference.dahl.global/tokens, so an exhausted key is replaceable without an account.",
+  "free_no_key": false
  },
  "deepinfra": {
   "base": "https://api.deepinfra.com/v1/openai",
   "key_env": "DEEPINFRA_API_KEY",
   "key_url": "https://deepinfra.com/dash/api_keys",
-  "name": "DeepInfra"
+  "name": "DeepInfra",
+  "free_no_key": false
  },
  "deepseek": {
   "base": "https://api.deepseek.com",
   "key_env": "DEEPSEEK_API_KEY",
   "key_url": "https://platform.deepseek.com/api_keys",
-  "name": "DeepSeek"
+  "name": "DeepSeek",
+  "free_no_key": false
  },
  "doubao": {
   "base": "https://ark.cn-beijing.volces.com/api/v3",
@@ -153,25 +173,29 @@
   "key_env": "DOUBAO_API_KEY",
   "key_url": "",
   "name": "doubao",
-  "tos_risk": "ambiguous"
+  "tos_risk": "ambiguous",
+  "free_no_key": false
  },
  "experiential": {
   "base": "https://api.experientiallabs.ai/v1",
   "key_env": "EXPLABS_API_KEY",
   "key_url": "https://platform.experientiallabs.ai/settings/api-keys",
-  "name": "Experiential Labs"
+  "name": "Experiential Labs",
+  "free_no_key": false
  },
  "featherless": {
   "base": "https://api.featherless.ai/v1",
   "key_env": "FEATHERLESS_API_KEY",
   "key_url": "https://featherless.ai/account/api-keys",
-  "name": "Featherless AI"
+  "name": "Featherless AI",
+  "free_no_key": false
  },
  "fireworks": {
   "base": "https://api.fireworks.ai/inference/v1",
   "key_env": "FIREWORKS_API_KEY",
   "key_url": "https://fireworks.ai/account/api-keys",
-  "name": "Fireworks"
+  "name": "Fireworks",
+  "free_no_key": false
  },
  "freemodel_dev": {
   "base": "https://api.freemodel.dev/v1",
@@ -180,43 +204,50 @@
   "key_env": "FREEMODEL_DEV_API_KEY",
   "key_url": "",
   "name": "freemodel-dev",
-  "tos_risk": "unknown"
+  "tos_risk": "unknown",
+  "free_no_key": false
  },
  "gemini": {
   "base": "https://generativelanguage.googleapis.com/v1beta/openai",
   "key_env": "GEMINI_API_KEY",
   "key_url": "https://aistudio.google.com/apikey",
-  "name": "Gemini"
+  "name": "Gemini",
+  "free_no_key": false
  },
  "github_copilot": {
   "base": "https://api.githubcopilot.com",
   "key_env": null,
   "key_url": null,
-  "name": "GitHub Copilot"
+  "name": "GitHub Copilot",
+  "free_no_key": false
  },
  "github_models": {
   "base": "https://models.github.ai/inference",
   "key_env": "GITHUB_TOKEN",
   "key_url": "https://github.com/settings/tokens",
-  "name": "GitHub Models"
+  "name": "GitHub Models",
+  "free_no_key": false
  },
  "grok": {
   "base": "https://api.x.ai/v1",
   "key_env": "XAI_API_KEY",
   "key_url": "https://console.x.ai/",
-  "name": "xAI"
+  "name": "xAI",
+  "free_no_key": false
  },
  "groq": {
   "base": "https://api.groq.com/openai/v1",
   "key_env": "GROQ_API_KEY",
   "key_url": "https://console.groq.com/keys",
-  "name": "Groq"
+  "name": "Groq",
+  "free_no_key": false
  },
  "huggingface": {
   "base": "https://router.huggingface.co/v1",
   "key_env": "HUGGINGFACE_API_KEY",
   "key_url": "https://huggingface.co/settings/tokens",
-  "name": "Hugging Face"
+  "name": "Hugging Face",
+  "free_no_key": false
  },
  "hyperbolic": {
   "base": "https://api.hyperbolic.xyz/v1",
@@ -225,7 +256,8 @@
   "key_env": "HYPERBOLIC_API_KEY",
   "key_url": "",
   "name": "hyperbolic",
-  "tos_risk": "ok"
+  "tos_risk": "ok",
+  "free_no_key": false
  },
  "inference_net": {
   "base": "https://api.inference.net/v1",
@@ -234,31 +266,36 @@
   "key_env": "INFERENCE_NET_API_KEY",
   "key_url": "",
   "name": "inference-net",
-  "tos_risk": "caution"
+  "tos_risk": "caution",
+  "free_no_key": false
  },
  "kilo": {
   "base": "https://api.kilo.ai/api/gateway",
   "key_env": "KILO_API_KEY",
   "key_url": "https://app.kilo.ai",
-  "name": "Kilo.ai"
+  "name": "Kilo.ai",
+  "free_no_key": true
  },
  "kimi": {
   "base": "https://api.moonshot.ai/v1",
   "key_env": "KIMI_API_KEY",
   "key_url": "https://platform.moonshot.cn/console/api-keys",
-  "name": "Kimi"
+  "name": "Kimi",
+  "free_no_key": false
  },
  "kimi_code": {
   "base": "https://api.kimi.com/coding/v1",
   "key_env": "KIMI_CODE_API_KEY",
   "key_url": "https://www.kimi.com/code/console",
-  "name": "Kimi Code"
+  "name": "Kimi Code",
+  "free_no_key": false
  },
  "lightning": {
   "base": "https://lightning.ai/api/v1",
   "key_env": "LIGHTNING_API_KEY",
   "key_url": "https://lightning.ai/lightning-ai/model-apis/models",
-  "name": "Lightning AI"
+  "name": "Lightning AI",
+  "free_no_key": false
  },
  "liquid": {
   "base": "https://inference.liquid.ai/v1",
@@ -267,13 +304,15 @@
   "key_env": "LIQUID_API_KEY",
   "key_url": "",
   "name": "liquid",
-  "tos_risk": "unknown"
+  "tos_risk": "unknown",
+  "free_no_key": false
  },
  "llamacpp": {
   "base": "http://localhost:8080/v1",
   "key_env": null,
   "key_url": null,
-  "name": "LLaMA.cpp"
+  "name": "LLaMA.cpp",
+  "free_no_key": false
  },
  "llm7": {
   "base": "https://api.llm7.io/v1",
@@ -286,25 +325,29 @@
   "base": "http://localhost:1234/v1",
   "key_env": null,
   "key_url": null,
-  "name": "LM Studio"
+  "name": "LM Studio",
+  "free_no_key": false
  },
  "minimax": {
   "base": "https://api.minimax.io/v1",
   "key_env": "MINIMAX_API_KEY",
   "key_url": "https://platform.minimax.io/user-center/basic-information/interface-key",
-  "name": "MiniMax"
+  "name": "MiniMax",
+  "free_no_key": false
  },
  "mistral": {
   "base": "https://api.mistral.ai/v1",
   "key_env": "MISTRAL_API_KEY",
   "key_url": "https://console.mistral.ai/",
-  "name": "Mistral"
+  "name": "Mistral",
+  "free_no_key": false
  },
  "mistral_codestral": {
   "base": "https://codestral.mistral.ai/v1",
   "key_env": "CODESTRAL_API_KEY",
   "key_url": "https://console.mistral.ai/",
-  "name": "Mistral Codestral"
+  "name": "Mistral Codestral",
+  "free_no_key": false
  },
  "monsterapi": {
   "base": "https://api.monsterapi.ai/v1",
@@ -313,7 +356,8 @@
   "key_env": "MONSTERAPI_API_KEY",
   "key_url": "",
   "name": "monsterapi",
-  "tos_risk": "ambiguous"
+  "tos_risk": "ambiguous",
+  "free_no_key": false
  },
  "morph": {
   "base": "https://api.morphllm.com/v1",
@@ -322,19 +366,22 @@
   "key_env": "MORPH_API_KEY",
   "key_url": "",
   "name": "morph",
-  "tos_risk": "ok"
+  "tos_risk": "ok",
+  "free_no_key": false
  },
  "nararoute": {
   "base": "https://router.bynara.id/v1",
   "key_env": "NARAROUTE_API_KEY",
   "key_url": "https://router.bynara.id/keys",
-  "name": "NaraRoute"
+  "name": "NaraRoute",
+  "free_no_key": false
  },
  "nebius": {
   "base": "https://api.tokenfactory.nebius.com/v1",
   "key_env": "NEBIUS_API_KEY",
   "key_url": "https://tokenfactory.nebius.com/project/api-keys",
-  "name": "Nebius Token Factory"
+  "name": "Nebius Token Factory",
+  "free_no_key": false
  },
  "nous_research": {
   "base": "https://inference-api.nousresearch.com/v1",
@@ -343,13 +390,15 @@
   "key_env": "NOUS_RESEARCH_API_KEY",
   "key_url": "",
   "name": "nous-research",
-  "tos_risk": "ambiguous"
+  "tos_risk": "ambiguous",
+  "free_no_key": false
  },
  "novita": {
   "base": "https://api.novita.ai/openai/v1",
   "key_env": "NOVITA_API_KEY",
   "key_url": "https://novita.ai/settings/key-management",
-  "name": "Novita AI"
+  "name": "Novita AI",
+  "free_no_key": false
  },
  "nscale": {
   "base": "https://inference.api.nscale.com/v1",
@@ -358,13 +407,15 @@
   "key_env": "NSCALE_API_KEY",
   "key_url": "",
   "name": "nscale",
-  "tos_risk": "caution"
+  "tos_risk": "caution",
+  "free_no_key": false
  },
  "nvidia_nim": {
   "base": "https://integrate.api.nvidia.com/v1",
   "key_env": "NVIDIA_NIM_API_KEY",
   "key_url": "https://build.nvidia.com/settings/api-keys",
-  "name": "NVIDIA NIM"
+  "name": "NVIDIA NIM",
+  "free_no_key": false
  },
  "oculus_webchat": {
   "base": "http://127.0.0.1:8080/v1",
@@ -372,63 +423,73 @@
   "key_url": "",
   "name": "Oculus webchat gateways (local)",
   "no_key": true,
-  "our_keys": "no key: these are the local webchat-to-api gateways on this box. Ports 8080 (deepseek), 8081 (deepseek2), 8083 (deepseek4). Model id is 'anymodel'. They serialise per account and need 20-45s between sends."
+  "our_keys": "no key: these are the local webchat-to-api gateways on this box. Ports 8080 (deepseek), 8081 (deepseek2), 8083 (deepseek4). Model id is 'anymodel'. They serialise per account and need 20-45s between sends.",
+  "free_no_key": false
  },
  "ollama": {
   "base": "http://localhost:11434",
   "key_env": null,
   "key_url": null,
-  "name": "Ollama"
+  "name": "Ollama",
+  "free_no_key": false
  },
  "ollama_cloud": {
   "base": "https://ollama.com/v1",
   "key_env": "OLLAMA_API_KEY",
   "key_url": "https://ollama.com/settings/keys",
-  "name": "Ollama Cloud"
+  "name": "Ollama Cloud",
+  "free_no_key": false
  },
  "open_router": {
   "base": "https://openrouter.ai/api/v1",
   "key_env": "OPENROUTER_API_KEY",
   "key_url": "https://openrouter.ai/keys",
   "name": "OpenRouter",
-  "our_keys": "our key: ~/.claude/openrouter.token. $1 cap, so ONLY the :free ids work."
+  "our_keys": "our key: ~/.claude/openrouter.token. $1 cap, so ONLY the :free ids work.",
+  "free_no_key": false
  },
  "openai": {
   "base": "https://chatgpt.com/backend-api/codex",
   "key_env": null,
   "key_url": null,
-  "name": "OpenAI / ChatGPT"
+  "name": "OpenAI / ChatGPT",
+  "free_no_key": false
  },
  "openai_api": {
   "base": "https://api.openai.com/v1",
   "key_env": "OPENAI_API_KEY",
   "key_url": "https://platform.openai.com/api-keys",
-  "name": "OpenAI API"
+  "name": "OpenAI API",
+  "free_no_key": false
  },
  "opencode_go": {
   "base": "https://opencode.ai/zen/go/v1",
   "key_env": "OPENCODE_API_KEY",
   "key_url": "https://opencode.ai/auth",
-  "name": "OpenCode Go"
+  "name": "OpenCode Go",
+  "free_no_key": false
  },
  "opencode_zen": {
   "base": "https://opencode.ai/zen/v1",
   "key_env": "OPENCODE_API_KEY",
   "key_url": "https://opencode.ai/auth",
-  "name": "OpenCode Zen"
+  "name": "OpenCode Zen",
+  "free_no_key": false
  },
  "opper": {
   "base": "https://api.opper.ai/v3/compat",
   "key_env": "OPPER_API_KEY",
   "key_url": "https://platform.opper.ai/",
-  "name": "Opper"
+  "name": "Opper",
+  "free_no_key": false
  },
  "orcarouter": {
   "base": "https://api.orcarouter.ai/v1",
   "key_env": "ORCAROUTER_API_KEY",
   "key_url": "https://api.orcarouter.ai/",
   "name": "OrcaRouter",
-  "our_keys": "our key at ~/.config/orch/orcarouter_key.txt (0600) and ORCAROUTER_API_KEY. Replay-scoped keys 403 - it must be an INFERENCE-scoped key. Measured 2026-10-05: /v1/models lists 5, only orcarouter/free is callable."
+  "our_keys": "our key at ~/.config/orch/orcarouter_key.txt (0600) and ORCAROUTER_API_KEY. Replay-scoped keys 403 - it must be an INFERENCE-scoped key. Measured 2026-10-05: /v1/models lists 5, only orcarouter/free is callable.",
+  "free_no_key": false
  },
  "pollinations": {
   "base": "https://text.pollinations.ai/openai",
@@ -441,7 +502,8 @@
   "base": "https://inference.poolside.ai/v1",
   "key_env": "POOLSIDE_API_KEY",
   "key_url": "https://platform.poolside.ai/",
-  "name": "Poolside AI"
+  "name": "Poolside AI",
+  "free_no_key": false
  },
  "predibase": {
   "base": "https://serving.app.predibase.com/v1",
@@ -450,7 +512,8 @@
   "key_env": "PREDIBASE_API_KEY",
   "key_url": "",
   "name": "predibase",
-  "tos_risk": "caution"
+  "tos_risk": "caution",
+  "free_no_key": false
  },
  "publicai": {
   "base": "https://api.publicai.co/v1",
@@ -459,7 +522,8 @@
   "key_env": "PUBLICAI_API_KEY",
   "key_url": "",
   "name": "publicai",
-  "tos_risk": "caution"
+  "tos_risk": "caution",
+  "free_no_key": false
  },
  "qoder": {
   "base": "https://api.qoder.com/v1",
@@ -468,13 +532,15 @@
   "key_env": "QODER_API_KEY",
   "key_url": "",
   "name": "qoder",
-  "tos_risk": "caution"
+  "tos_risk": "caution",
+  "free_no_key": false
  },
  "qwencloud_coding": {
   "base": "https://coding-intl.dashscope.aliyuncs.com/v1",
   "key_env": "QWENCLOUD_CODING_API_KEY",
   "key_url": "https://home.qwencloud.com/api-keys",
-  "name": "QwenCloud Coding Plan"
+  "name": "QwenCloud Coding Plan",
+  "free_no_key": false
  },
  "reka": {
   "base": "https://api.reka.ai/v1",
@@ -483,25 +549,29 @@
   "key_env": "REKA_API_KEY",
   "key_url": "",
   "name": "reka",
-  "tos_risk": "caution"
+  "tos_risk": "caution",
+  "free_no_key": false
  },
  "requesty": {
   "base": "https://router.requesty.ai/v1",
   "key_env": "REQUESTY_API_KEY",
   "key_url": "https://app.requesty.ai/api-keys",
-  "name": "Requesty"
+  "name": "Requesty",
+  "free_no_key": false
  },
  "sambanova": {
   "base": "https://api.sambanova.ai/v1",
   "key_env": "SAMBANOVA_API_KEY",
   "key_url": "https://cloud.sambanova.ai/apis",
-  "name": "SambaNova"
+  "name": "SambaNova",
+  "free_no_key": false
  },
  "scaleway": {
   "base": "https://api.scaleway.ai/v1",
   "key_env": "SCW_SECRET_KEY",
   "key_url": "https://console.scaleway.com/iam/api-keys",
-  "name": "Scaleway"
+  "name": "Scaleway",
+  "free_no_key": false
  },
  "sensenova": {
   "base": "https://token.sensenova.cn/v1",
@@ -510,13 +580,15 @@
   "key_env": "SENSENOVA_API_KEY",
   "key_url": "",
   "name": "sensenova",
-  "tos_risk": "caution"
+  "tos_risk": "caution",
+  "free_no_key": false
  },
  "siliconflow": {
   "base": "https://api.siliconflow.com/v1",
   "key_env": "SILICONFLOW_API_KEY",
   "key_url": "https://cloud.siliconflow.com/account/ak",
-  "name": "SiliconFlow"
+  "name": "SiliconFlow",
+  "free_no_key": false
  },
  "sparkdesk": {
   "base": "https://spark-api-open.xf-yun.com/v1",
@@ -525,7 +597,8 @@
   "key_env": "SPARKDESK_API_KEY",
   "key_url": "",
   "name": "sparkdesk",
-  "tos_risk": "caution"
+  "tos_risk": "caution",
+  "free_no_key": false
  },
  "stepfun": {
   "base": "https://api.stepfun.com/v1",
@@ -534,7 +607,8 @@
   "key_env": "STEPFUN_API_KEY",
   "key_url": "",
   "name": "stepfun",
-  "tos_risk": "ok"
+  "tos_risk": "ok",
+  "free_no_key": false
  },
  "tencent": {
   "base": "https://api.hunyuan.cloud.tencent.com/v1",
@@ -543,19 +617,22 @@
   "key_env": "TENCENT_API_KEY",
   "key_url": "",
   "name": "tencent",
-  "tos_risk": "caution"
+  "tos_risk": "caution",
+  "free_no_key": false
  },
  "together": {
   "base": "https://api.together.ai/v1",
   "key_env": "TOGETHER_API_KEY",
   "key_url": "https://api.together.ai/settings/api-keys",
-  "name": "Together AI"
+  "name": "Together AI",
+  "free_no_key": false
  },
  "tokenrouter": {
   "base": "https://api.tokenrouter.com/v1",
   "key_env": "TOKENROUTER_API_KEY",
   "key_url": "https://www.tokenrouter.com/",
-  "name": "TokenRouter"
+  "name": "TokenRouter",
+  "free_no_key": false
  },
  "uncloseai": {
   "base": "https://hermes.ai.unturf.com/v1",
@@ -564,54 +641,63 @@
   "key_env": "UNCLOSEAI_API_KEY",
   "key_url": "",
   "name": "uncloseai",
-  "tos_risk": "caution"
+  "tos_risk": "caution",
+  "free_no_key": true
  },
  "vercel": {
   "base": "https://ai-gateway.vercel.sh/v1",
   "key_env": "AI_GATEWAY_API_KEY",
   "key_url": "https://vercel.com/docs/ai-gateway",
-  "name": "Vercel AI Gateway"
+  "name": "Vercel AI Gateway",
+  "free_no_key": false
  },
  "wafer": {
   "base": "https://pass.wafer.ai/v1",
   "key_env": "WAFER_API_KEY",
   "key_url": "https://www.wafer.ai/pass",
-  "name": "Wafer"
+  "name": "Wafer",
+  "free_no_key": false
  },
  "wandb": {
   "base": "https://api.inference.wandb.ai/v1",
   "key_env": "WANDB_API_KEY",
   "key_url": "https://wandb.ai/settings",
-  "name": "W&B Inference"
+  "name": "W&B Inference",
+  "free_no_key": false
  },
  "xai": {
   "base": "https://api.x.ai/v1",
   "key_env": "XAI_API_KEY",
   "key_url": "https://console.x.ai/team/default/api-keys",
-  "name": "xAI (Grok)"
+  "name": "xAI (Grok)",
+  "free_no_key": false
  },
  "xkiro": {
   "base": "https://api.xkiro.com/v1",
   "key_env": "XKIRO_API_KEY",
   "key_url": "https://xkiro.com/dashboard/api/keys",
-  "name": "xKiro"
+  "name": "xKiro",
+  "free_no_key": false
  },
  "zai": {
   "base": "https://api.z.ai/api/paas/v4",
   "key_env": "ZAI_API_KEY",
   "key_url": "https://z.ai/manage-apikey/apikey-list",
-  "name": "Z.ai"
+  "name": "Z.ai",
+  "free_no_key": false
  },
  "zai_api": {
   "base": "https://api.z.ai/api/paas/v4",
   "key_env": "ZAI_API_KEY",
   "key_url": "https://z.ai/manage-apikey/apikey-list",
-  "name": "Z.ai API"
+  "name": "Z.ai API",
+  "free_no_key": false
  },
  "zenmux": {
   "base": "https://zenmux.ai/api/v1",
   "key_env": "ZENMUX_API_KEY",
   "key_url": "https://zenmux.ai/platform/pay-as-you-go",
-  "name": "ZenMux"
+  "name": "ZenMux",
+  "free_no_key": false
  }
 }

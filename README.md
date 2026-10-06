@@ -20,99 +20,112 @@ have and its models join the chain.
 
 ## The two ideas
 
-**1. Serve strictly in rank order.** Best model first. The first one that answers wins, and the reply
-carries `x-free-ai-model` so you know which it was.
+**1. Serve strictly in rank order.** Best model first. The first one that answers wins, and
+the reply is returned. The list is ordered by what has actually answered on this machine.
 
-**2. A failure costs a LINEAR cooldown.**
+**2. A failure costs a cooldown that fits the failure.** A transient hiccup costs nothing (a
+sibling model retries). A capacity limit is priced. Only a real "this model is gone" parks
+for a long time. See `server.js` -> `penalise`.
 
-| consecutive failures | cooldown |
-|---|---|
-| 1 | 15 min |
-| 2 | 30 min |
-| 3 | 45 min |
-| n | n × 15 min |
+---
 
-A success resets the streak to zero. Cooldowns persist to `state.json`, because a rate limit does not
-care that you restarted. `401` `402` `403` `404` `408` `429` `5xx`, timeouts and connection errors
-all count as failures. A `400` does **not** — that is your request being wrong, and hiding it behind
-a fallback would just fail identically on the next model.
+## It works with no keys at all
 
-That is the whole design. There is no scheduler, no scoring model, no embeddings, no database.
+The default chain in `data/models.json` is **keyless**. Every entry was checked with a real
+completion before it was added, and each of these answers with no account and no API key:
 
-## Endpoints
+| Provider | Endpoint | Notes |
+|---|---|---|
+| **Kilo Gateway** | `https://api.kilo.ai/api/gateway` | No auth header at all. Six free ids answer. |
+| **LLM7.io** | `https://api.llm7.io/v1` | Keyless. `default` and `fast` are selectors that resolve server-side - they work where most concrete ids in its 66-model list need auth. |
+| **AI Horde** | `https://oai.aihorde.net/v1` | Crowdsourced, slow. Its **documented** anonymous placeholder key is used. |
+| **Pollinations** | `https://text.pollinations.ai/openai` | Keyless anonymous tier, budget-limited. |
+| **uncloseai / unturf** | `https://hermes.ai.unturf.com/v1` | Genuinely keyless, one rotating model id, rate-limited per IP. |
 
-| Route | What |
-|---|---|
-| `POST /v1/chat/completions` | OpenAI-compatible. Streaming works. |
-| `GET /v1/models` | The ranked list with live health per model. |
-| `GET /status` | Cooldowns, streaks, call counts, and which keys are missing. |
-| `POST /admin/reset` | `{}` clears everything; `{"model":"x"}` clears one; `{"model":"x","expire":true}` clears the cooldown but keeps the streak (so the next failure steps up the ladder). |
-| `GET /health` | Liveness. |
+Nothing else is in the default chain. **No provider of ours is baked in** - if it needs a
+key it does not belong there, and it is not there.
 
-## Adding your own keys
+Start it and it works:
 
-Copy `config.example.json` to `config.json`:
+```bash
+node server.js
+curl -s localhost:8790/v1/chat/completions \
+  -H 'content-type: application/json' \
+  -d '{"model":"freeai","messages":[{"role":"user","content":"hello"}]}'
+```
+
+---
+
+## Adding your own keys (optional)
+
+Create `config.json` (gitignored) and add a key. Nothing else is required:
 
 ```json
 {
   "keys": {
     "groq": "gsk_...",
     "gemini": "AIza...",
-    "cerebras": "csk-...",
-    "deepseek": "sk-..."
+    "openrouter": "sk-or-..."
   }
 }
 ```
 
-Or via the environment: `GROQ_API_KEY=... GEMINI_API_KEY=... node server.js`.
-
-**Multiple keys rotate one per call** — three Gemini keys become 4,500 requests/day instead of 1,500:
+**Multiple keys rotate one per call** - three Gemini keys become 4,500 requests/day
+instead of 1,500:
 
 ```json
-{ "keys": { "gemini": ["AIza-a", "AIza-b", "AIza-c"] } }
+{ "keys": { "gemini": ["AIza-key1", "AIza-key2", "AIza-key3"] } }
 ```
 
-## Adding your own models
+A provider only joins the chain **when its key is present**. `data/providers.json` is the
+catalogue of what can be added - 89 providers with their base URL and where to get a key -
+so adding one is a single line, not a hand-written model list.
 
-`config.json` can carry the list outright:
+To add a provider the catalogue does not know, declare it with its models:
 
 ```json
 {
-  "keys": { "my_provider": "sk-..." },
-  "models": [
-    { "rank": 1, "provider": "my_provider", "model": "my-model", "base": "https://api.example.com/v1", "key_env": null, "no_key": false }
-  ]
+  "keys": { "myprovider": "sk-..." },
+  "providers": {
+    "myprovider": { "base": "https://api.myprovider.com/v1", "models": ["my-model-1"] }
+  }
 }
 ```
 
-`rank` is the only ordering rule. Lower is tried first.
+### Optional: prompt compression
 
-## What is in it
+The prompt can be shrunk before it is sent. This is **off by default** - a caller that has
+not asked for it gets its bytes back untouched.
 
-`data/providers.json` — 62 providers with their OpenAI-compatible base URL and where to get a key.
-`data/models.json` — 45 free models across 20 of them, ranked.
+```json
+{ "compression": "safe" }
+```
 
-Built by surveying the free-tier projects that already exist, taking the **provider endpoints** (a
-fact) rather than their code, and throwing away everything that is not the model list or the fallback
-rule. Sources studied, and what was taken from each:
+- **`safe`** - strips trailing whitespace, collapses runs of blank lines, and elides a run
+  of 4+ identical consecutive lines (a log spamming one error). It **never** touches
+  line-numbered file content, template variables, URLs, or an edit contract.
+- **`balanced`** - `safe`, plus comment stripping and JSON minification, applied only to
+  EARLIER turns. The final user turn is exempt, because that is the text a quoted edit
+  comes from.
 
-| Project | Licence | Taken |
-|---|---|---|
-| [free-claude-code](https://github.com/Alishahryar1/free-claude-code) | AGPL-3.0 | the provider catalogue: 60 services with base URLs and credential pages |
-| [OmniRoute](https://github.com/diegosouzapw/OmniRoute) | MIT | the shape of the tier chain; already runs on this machine as its own gateway |
-| [freellmapi](https://github.com/tashfeenahmed/freellmapi) | MIT | the failure taxonomy (what counts as a quota failure vs a bad request) and the endpoints it adds: llm7, pollinations, AI Horde |
-| [free-llm-api-resources](https://github.com/jtig37/free-llm-api-resources) | — | which providers are genuinely perpetual-free vs trial credits |
-| [llm7.io](https://github.com/chigwell/llm7.io) | AGPL-3.0 | used as a **provider**, not as code |
-| [LiteLLM](https://github.com/BerriAI/litellm) | MIT | confirmation that a fallback chain is the right primitive |
+The runtime level can be changed without a restart:
+`POST /admin/compression {"level":"balanced"}`. Responses carry the saving in
+`x-free-ai-compression`, and `/health` reports the running total.
 
-**No code was copied from any of them.** AGPL and GPL projects are listed because their *provider
-lists* are facts, not expression — the endpoints, the key pages and which tiers are free are things
-you would find by reading each provider's own docs. Everything here is written from scratch against
-those facts. If you are reusing this, the same reasoning applies to you.
+### Optional: the MCP server
 
-Deliberately **not** included: a web UI, a database, embeddings, sticky sessions, prompt compression,
-a scheduler, cost accounting, or a plugin system. Each of those is real in the projects above and each
-one is weight this does not need.
+`mcp-server.js` exposes the router, the compressor, subagents and direct file tools as MCP
+tools, so any MCP-capable client can drive them. Zero dependencies - JSON-RPC over stdio.
+
+```json
+{ "mcpServers": { "free-ai": { "command": "node", "args": ["/path/to/free-ai/mcp-server.js"] } } }
+```
+
+`freeai_subagent` runs a real multi-step loop (the model calls `read_file` / `list_dir` /
+`grep` itself, then answers). It is **read-only** unless `allow_write` / `allow_bash` are
+set per call. Run `freeai_selftest` to check the whole path end to end.
+
+---
 
 ## Test
 
