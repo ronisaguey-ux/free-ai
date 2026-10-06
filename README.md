@@ -65,7 +65,7 @@ Create `config.json` (gitignored) and add a key. Nothing else is required:
   "keys": {
     "groq": "gsk_...",
     "gemini": "AIza...",
-    "openrouter": "sk-or-..."
+    "together": "..."
   }
 }
 ```

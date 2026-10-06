@@ -10,9 +10,8 @@
     "cerebras": "csk-...",
     "nvidia_nim": "nvapi-...",
     "mistral": "...",
-    "openrouter": "sk-or-...",
-    "deepinfra": "...",
-    "together": "..."
+    "together": "...",
+    "deepinfra": "..."
   },
   "_multi_key_example": "three Gemini keys become 4,500 requests/day instead of 1,500",
   "_rotate_example": {
