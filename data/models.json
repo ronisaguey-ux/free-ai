@@ -11,17 +11,6 @@
     "rank": 1
   },
   {
-    "provider": "pollinations",
-    "model": "openai-fast",
-    "base": "https://text.pollinations.ai/openai",
-    "key_env": null,
-    "no_key": true,
-    "timeout_ms": 45000,
-    "free_type": "keyless",
-    "probe": "4/4 correct, median 0.3s",
-    "rank": 2
-  },
-  {
     "provider": "ovhcloud",
     "base": "https://oai.endpoints.kepler.ai.cloud.ovh.net/v1",
     "key_env": null,
@@ -30,7 +19,7 @@
     "free_type": "keyless",
     "probe": "answered PONG keyless; shared rate limit -> 429 under load, so ranked last",
     "model": "gpt-oss-20b",
-    "rank": 3
+    "rank": 2
   },
   {
     "provider": "uncloseai",
@@ -41,7 +30,7 @@
     "timeout_ms": 90000,
     "free_type": "keyless",
     "probe": "3/4, but a 45s read timeout under load",
-    "rank": 4
+    "rank": 3
   },
   {
     "provider": "aihorde",
@@ -52,7 +41,7 @@
     "timeout_ms": 90000,
     "free_type": "keyless",
     "probe": "2/4, this id only, anonymous key",
-    "rank": 5,
+    "rank": 4,
     "anon_key": "0000000000"
   },
   {
@@ -64,7 +53,7 @@
     "timeout_ms": 45000,
     "free_type": "keyless",
     "probe": "10/15 ids answer, 0.7-2.4s",
-    "rank": 6
+    "rank": 5
   },
   {
     "provider": "pollinations",
@@ -75,7 +64,7 @@
     "timeout_ms": 45000,
     "free_type": "keyless",
     "probe": "4/4 correct, median 0.3s",
-    "rank": 7
+    "rank": 6
   },
   {
     "provider": "ovhcloud",
@@ -86,7 +75,7 @@
     "free_type": "keyless",
     "probe": "answered PONG keyless; shared rate limit -> 429 under load, so ranked last",
     "model": "Mistral-7B-Instruct-v0.3",
-    "rank": 8
+    "rank": 7
   },
   {
     "provider": "kilo",
@@ -97,18 +86,7 @@
     "timeout_ms": 45000,
     "free_type": "keyless",
     "probe": "10/15 ids answer, 0.7-2.4s",
-    "rank": 9
-  },
-  {
-    "provider": "pollinations",
-    "model": "openai-large",
-    "base": "https://text.pollinations.ai/openai",
-    "key_env": null,
-    "no_key": true,
-    "timeout_ms": 45000,
-    "free_type": "keyless",
-    "probe": "4/4 correct, median 0.3s",
-    "rank": 10
+    "rank": 8
   },
   {
     "provider": "ovhcloud",
@@ -119,7 +97,7 @@
     "free_type": "keyless",
     "probe": "answered PONG keyless; shared rate limit -> 429 under load, so ranked last",
     "model": "Qwen3.8-27B",
-    "rank": 11
+    "rank": 9
   },
   {
     "provider": "kilo",
@@ -130,7 +108,7 @@
     "timeout_ms": 45000,
     "free_type": "keyless",
     "probe": "10/15 ids answer, 0.7-2.4s",
-    "rank": 12
+    "rank": 10
   },
   {
     "provider": "kilo",
@@ -141,7 +119,7 @@
     "timeout_ms": 45000,
     "free_type": "keyless",
     "probe": "10/15 ids answer, 0.7-2.4s",
-    "rank": 13
+    "rank": 11
   },
   {
     "provider": "kilo",
@@ -152,7 +130,7 @@
     "timeout_ms": 45000,
     "free_type": "keyless",
     "probe": "10/15 ids answer, 0.7-2.4s",
-    "rank": 14,
+    "rank": 12,
     "anon_key": null
   },
   {
@@ -164,7 +142,7 @@
     "timeout_ms": 45000,
     "free_type": "keyless",
     "probe": "10/15 ids answer, 0.7-2.4s",
-    "rank": 15
+    "rank": 13
   },
   {
     "provider": "kilo",
@@ -175,7 +153,7 @@
     "timeout_ms": 45000,
     "free_type": "keyless",
     "probe": "10/15 ids answer, 0.7-2.4s",
-    "rank": 16
+    "rank": 14
   },
   {
     "provider": "kilo",
@@ -186,7 +164,7 @@
     "timeout_ms": 45000,
     "free_type": "keyless",
     "probe": "10/15 ids answer, 0.7-2.4s",
-    "rank": 17
+    "rank": 15
   },
   {
     "provider": "kilo",
@@ -197,7 +175,7 @@
     "timeout_ms": 45000,
     "free_type": "keyless",
     "probe": "10/15 ids answer, 0.7-2.4s",
-    "rank": 18
+    "rank": 16
   },
   {
     "provider": "opencode_zen",
@@ -208,6 +186,6 @@
     "timeout_ms": 45000,
     "free_type": "keyless",
     "probe": "4/4 correct, no key at all - 1 of 86 zen ids",
-    "rank": 19
+    "rank": 17
   }
 ]
