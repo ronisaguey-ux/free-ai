@@ -1,102 +1,202 @@
 [
   {
-    "rank": 1,
     "provider": "kilo",
     "model": "kilo-auto/free",
     "base": "https://api.kilo.ai/api/gateway",
     "key_env": null,
     "no_key": true,
-    "timeout_ms": 60000,
-    "verified": "2026-10-06",
-    "reliability": "4/4, 2.5s"
+    "timeout_ms": 45000,
+    "free_type": "keyless",
+    "probe": "10/15 answered keyless, 0.7-2.4s",
+    "rank": 1
   },
   {
-    "rank": 2,
     "provider": "kilo",
     "model": "stepfun/step-3.7-flash:free",
     "base": "https://api.kilo.ai/api/gateway",
     "key_env": null,
     "no_key": true,
-    "timeout_ms": 60000,
-    "verified": "2026-10-06",
-    "reliability": "4/4, 2.5s"
+    "timeout_ms": 45000,
+    "free_type": "keyless",
+    "probe": "10/15 answered keyless, 0.7-2.4s",
+    "rank": 2
   },
   {
-    "rank": 3,
-    "provider": "kilo",
-    "model": "poolside/laguna-s-2.1:free",
-    "base": "https://api.kilo.ai/api/gateway",
-    "key_env": null,
-    "no_key": true,
-    "timeout_ms": 60000,
-    "verified": "2026-10-06",
-    "reliability": "4/4, 2.5s"
-  },
-  {
-    "rank": 4,
-    "provider": "kilo",
-    "model": "inclusionai/ling-3.1-flash",
-    "base": "https://api.kilo.ai/api/gateway",
-    "key_env": null,
-    "no_key": true,
-    "timeout_ms": 60000,
-    "verified": "2026-10-06",
-    "reliability": "4/4, 2.5s"
-  },
-  {
-    "rank": 5,
     "provider": "kilo",
     "model": "dots-studio/dots-3-note-preview:free",
     "base": "https://api.kilo.ai/api/gateway",
     "key_env": null,
     "no_key": true,
-    "timeout_ms": 60000,
-    "verified": "2026-10-06",
-    "reliability": "4/4, 2.5s"
+    "timeout_ms": 45000,
+    "free_type": "keyless",
+    "probe": "10/15 answered keyless, 0.7-2.4s",
+    "rank": 3
   },
   {
-    "rank": 6,
     "provider": "kilo",
-    "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+    "model": "poolside/laguna-s-2.1:free",
     "base": "https://api.kilo.ai/api/gateway",
     "key_env": null,
     "no_key": true,
-    "timeout_ms": 120000,
-    "verified": "2026-10-06",
-    "reliability": "4/4, 2.5s"
+    "timeout_ms": 45000,
+    "free_type": "keyless",
+    "probe": "10/15 answered keyless, 0.7-2.4s",
+    "rank": 4
   },
   {
-    "rank": 7,
+    "provider": "kilo",
+    "model": "inclusionai/ling-3.0-flash-sante:free",
+    "base": "https://api.kilo.ai/api/gateway",
+    "key_env": null,
+    "no_key": true,
+    "timeout_ms": 45000,
+    "free_type": "keyless",
+    "probe": "10/15 answered keyless, 0.7-2.4s",
+    "rank": 5
+  },
+  {
+    "provider": "kilo",
+    "model": "liquid/lfm-2.5-2.6b:free",
+    "base": "https://api.kilo.ai/api/gateway",
+    "key_env": null,
+    "no_key": true,
+    "timeout_ms": 45000,
+    "free_type": "keyless",
+    "probe": "10/15 answered keyless, 0.7-2.4s",
+    "rank": 6,
+    "anon_key": null
+  },
+  {
+    "provider": "kilo",
+    "model": "nvidia/nemotron-3.5-lightning:free",
+    "base": "https://api.kilo.ai/api/gateway",
+    "key_env": null,
+    "no_key": true,
+    "timeout_ms": 45000,
+    "free_type": "keyless",
+    "probe": "10/15 answered keyless, 0.7-2.4s",
+    "rank": 7
+  },
+  {
+    "provider": "kilo",
+    "model": "cohere/north-mini-code:free",
+    "base": "https://api.kilo.ai/api/gateway",
+    "key_env": null,
+    "no_key": true,
+    "timeout_ms": 45000,
+    "free_type": "keyless",
+    "probe": "10/15 answered keyless, 0.7-2.4s",
+    "rank": 8
+  },
+  {
+    "provider": "kilo",
+    "model": "nvidia/nemotron-3-super-120b-a12b:free",
+    "base": "https://api.kilo.ai/api/gateway",
+    "key_env": null,
+    "no_key": true,
+    "timeout_ms": 45000,
+    "free_type": "keyless",
+    "probe": "10/15 answered keyless, 0.7-2.4s",
+    "rank": 9
+  },
+  {
+    "provider": "kilo",
+    "model": "openrouter/free",
+    "base": "https://api.kilo.ai/api/gateway",
+    "key_env": null,
+    "no_key": true,
+    "timeout_ms": 45000,
+    "free_type": "keyless",
+    "probe": "10/15 answered keyless, 0.7-2.4s",
+    "rank": 10
+  },
+  {
+    "provider": "ovhcloud",
+    "model": "gpt-oss-120b",
+    "base": "https://oai.endpoints.kepler.ai.cloud.ovh.net/v1",
+    "key_env": null,
+    "no_key": true,
+    "timeout_ms": 60000,
+    "free_type": "keyless",
+    "probe": "keyless, 3.1s then 429 under load",
+    "rank": 11
+  },
+  {
+    "provider": "ovhcloud",
+    "model": "gpt-oss-20b",
+    "base": "https://oai.endpoints.kepler.ai.cloud.ovh.net/v1",
+    "key_env": null,
+    "no_key": true,
+    "timeout_ms": 60000,
+    "free_type": "keyless",
+    "probe": "keyless, 3.1s then 429 under load",
+    "rank": 12
+  },
+  {
+    "provider": "ovhcloud",
+    "model": "Mistral-Nemo-Instruct-2407",
+    "base": "https://oai.endpoints.kepler.ai.cloud.ovh.net/v1",
+    "key_env": null,
+    "no_key": true,
+    "timeout_ms": 60000,
+    "free_type": "keyless",
+    "probe": "keyless, 3.1s then 429 under load",
+    "rank": 13
+  },
+  {
     "provider": "pollinations",
     "model": "openai-fast",
     "base": "https://text.pollinations.ai/openai",
     "key_env": null,
     "no_key": true,
-    "timeout_ms": 60000,
-    "verified": "2026-10-06",
-    "reliability": "4/4, 0.3s"
+    "timeout_ms": 45000,
+    "free_type": "keyless",
+    "probe": "4/4 correct, 0.3s",
+    "rank": 14
   },
   {
-    "rank": 8,
+    "provider": "pollinations",
+    "model": "openai",
+    "base": "https://text.pollinations.ai/openai",
+    "key_env": null,
+    "no_key": true,
+    "timeout_ms": 45000,
+    "free_type": "keyless",
+    "probe": "4/4 correct, 0.3s",
+    "rank": 15
+  },
+  {
+    "provider": "pollinations",
+    "model": "openai-large",
+    "base": "https://text.pollinations.ai/openai",
+    "key_env": null,
+    "no_key": true,
+    "timeout_ms": 45000,
+    "free_type": "keyless",
+    "probe": "4/4 correct, 0.3s",
+    "rank": 16
+  },
+  {
     "provider": "uncloseai",
     "model": "turboderp/Qwen3.8-27B-exl3",
     "base": "https://hermes.ai.unturf.com/v1",
     "key_env": null,
     "no_key": true,
-    "timeout_ms": 120000,
-    "verified": "2026-10-06",
-    "reliability": "3/4, 48s"
+    "timeout_ms": 90000,
+    "free_type": "keyless",
+    "probe": "3/4 correct, 48s",
+    "rank": 17
   },
   {
-    "rank": 9,
     "provider": "aihorde",
     "model": "koboldcpp/gemma-3-4b-it-heretic",
     "base": "https://oai.aihorde.net/v1",
     "key_env": null,
     "no_key": true,
-    "timeout_ms": 180000,
-    "anon_key": "0000000000",
-    "verified": "2026-10-06",
-    "reliability": "2/4, 6s"
+    "timeout_ms": 90000,
+    "free_type": "keyless",
+    "probe": "2/4 correct, 6s, anon key",
+    "rank": 18,
+    "anon_key": "0000000000"
   }
 ]
