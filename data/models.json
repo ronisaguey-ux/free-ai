@@ -1,123 +1,102 @@
 [
- {
-  "rank": 1,
-  "provider": "kilo",
-  "model": "kilo-auto/free",
-  "base": "https://api.kilo.ai/api/gateway",
-  "key_env": null,
-  "no_key": true,
-  "timeout_ms": 60000,
-  "verified": "2026-10-06"
- },
- {
-  "rank": 2,
-  "provider": "kilo",
-  "model": "stepfun/step-3.7-flash:free",
-  "base": "https://api.kilo.ai/api/gateway",
-  "key_env": null,
-  "no_key": true,
-  "timeout_ms": 60000,
-  "verified": "2026-10-06"
- },
- {
-  "rank": 3,
-  "provider": "kilo",
-  "model": "poolside/laguna-s-2.1:free",
-  "base": "https://api.kilo.ai/api/gateway",
-  "key_env": null,
-  "no_key": true,
-  "timeout_ms": 60000,
-  "verified": "2026-10-06"
- },
- {
-  "rank": 4,
-  "provider": "kilo",
-  "model": "inclusionai/ling-3.1-flash",
-  "base": "https://api.kilo.ai/api/gateway",
-  "key_env": null,
-  "no_key": true,
-  "timeout_ms": 60000,
-  "verified": "2026-10-06"
- },
- {
-  "rank": 5,
-  "provider": "kilo",
-  "model": "dots-studio/dots-3-note-preview:free",
-  "base": "https://api.kilo.ai/api/gateway",
-  "key_env": null,
-  "no_key": true,
-  "timeout_ms": 60000,
-  "verified": "2026-10-06"
- },
- {
-  "rank": 6,
-  "provider": "kilo",
-  "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
-  "base": "https://api.kilo.ai/api/gateway",
-  "key_env": null,
-  "no_key": true,
-  "timeout_ms": 120000,
-  "verified": "2026-10-06"
- },
- {
-  "rank": 7,
-  "provider": "llm7",
-  "model": "default",
-  "base": "https://api.llm7.io/v1",
-  "key_env": null,
-  "no_key": true,
-  "timeout_ms": 90000,
-  "verified": "2026-10-06"
- },
- {
-  "rank": 8,
-  "provider": "llm7",
-  "model": "fast",
-  "base": "https://api.llm7.io/v1",
-  "key_env": null,
-  "no_key": true,
-  "timeout_ms": 90000,
-  "verified": "2026-10-06"
- },
- {
-  "rank": 9,
-  "provider": "aihorde",
-  "model": "koboldcpp/gemma-3-4b-it-heretic",
-  "base": "https://oai.aihorde.net/v1",
-  "key_env": null,
-  "no_key": true,
-  "timeout_ms": 180000,
-  "anon_key": "0000000000",
-  "verified": "2026-10-06"
- },
- {
-  "rank": 10,
-  "provider": "llm7",
-  "model": "DeepSeek-V4-Flash-0731",
-  "base": "https://api.llm7.io/v1",
-  "key_env": null,
-  "no_key": true,
-  "timeout_ms": 90000,
-  "verified": "2026-10-06"
- },
- {
-  "rank": 11,
-  "provider": "pollinations",
-  "model": "openai-fast",
-  "base": "https://text.pollinations.ai/openai",
-  "key_env": null,
-  "no_key": true,
-  "timeout_ms": 60000,
-  "verified": "2026-10-06"
- },
- {
-  "rank": 12,
-  "provider": "uncloseai",
-  "model": "turboderp/Qwen3.8-27B-exl3",
-  "base": "https://hermes.ai.unturf.com/v1",
-  "key_env": null,
-  "no_key": true,
-  "timeout_ms": 120000,
-  "verified": "2026-10-06"
- }
+  {
+    "rank": 1,
+    "provider": "kilo",
+    "model": "kilo-auto/free",
+    "base": "https://api.kilo.ai/api/gateway",
+    "key_env": null,
+    "no_key": true,
+    "timeout_ms": 60000,
+    "verified": "2026-10-06",
+    "reliability": "4/4, 2.5s"
+  },
+  {
+    "rank": 2,
+    "provider": "kilo",
+    "model": "stepfun/step-3.7-flash:free",
+    "base": "https://api.kilo.ai/api/gateway",
+    "key_env": null,
+    "no_key": true,
+    "timeout_ms": 60000,
+    "verified": "2026-10-06",
+    "reliability": "4/4, 2.5s"
+  },
+  {
+    "rank": 3,
+    "provider": "kilo",
+    "model": "poolside/laguna-s-2.1:free",
+    "base": "https://api.kilo.ai/api/gateway",
+    "key_env": null,
+    "no_key": true,
+    "timeout_ms": 60000,
+    "verified": "2026-10-06",
+    "reliability": "4/4, 2.5s"
+  },
+  {
+    "rank": 4,
+    "provider": "kilo",
+    "model": "inclusionai/ling-3.1-flash",
+    "base": "https://api.kilo.ai/api/gateway",
+    "key_env": null,
+    "no_key": true,
+    "timeout_ms": 60000,
+    "verified": "2026-10-06",
+    "reliability": "4/4, 2.5s"
+  },
+  {
+    "rank": 5,
+    "provider": "kilo",
+    "model": "dots-studio/dots-3-note-preview:free",
+    "base": "https://api.kilo.ai/api/gateway",
+    "key_env": null,
+    "no_key": true,
+    "timeout_ms": 60000,
+    "verified": "2026-10-06",
+    "reliability": "4/4, 2.5s"
+  },
+  {
+    "rank": 6,
+    "provider": "kilo",
+    "model": "nvidia/nemotron-3-ultra-550b-a55b:free",
+    "base": "https://api.kilo.ai/api/gateway",
+    "key_env": null,
+    "no_key": true,
+    "timeout_ms": 120000,
+    "verified": "2026-10-06",
+    "reliability": "4/4, 2.5s"
+  },
+  {
+    "rank": 7,
+    "provider": "pollinations",
+    "model": "openai-fast",
+    "base": "https://text.pollinations.ai/openai",
+    "key_env": null,
+    "no_key": true,
+    "timeout_ms": 60000,
+    "verified": "2026-10-06",
+    "reliability": "4/4, 0.3s"
+  },
+  {
+    "rank": 8,
+    "provider": "uncloseai",
+    "model": "turboderp/Qwen3.8-27B-exl3",
+    "base": "https://hermes.ai.unturf.com/v1",
+    "key_env": null,
+    "no_key": true,
+    "timeout_ms": 120000,
+    "verified": "2026-10-06",
+    "reliability": "3/4, 48s"
+  },
+  {
+    "rank": 9,
+    "provider": "aihorde",
+    "model": "koboldcpp/gemma-3-4b-it-heretic",
+    "base": "https://oai.aihorde.net/v1",
+    "key_env": null,
+    "no_key": true,
+    "timeout_ms": 180000,
+    "anon_key": "0000000000",
+    "verified": "2026-10-06",
+    "reliability": "2/4, 6s"
+  }
 ]
