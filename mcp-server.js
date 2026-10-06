@@ -274,9 +274,36 @@ function parseAgentReply(text) {
     let obj;
     try { obj = JSON.parse(c); } catch { continue; }
     if (obj && typeof obj.tool === 'string') return { kind: 'tool', tool: obj.tool, args: obj.args || {} };
+    const call = Array.isArray(obj && obj.tool_calls) ? obj.tool_calls[0] : null;
+    const fn = call && call.function;
+    if (fn && typeof fn.name === 'string') {
+      let args = {};
+      if (typeof fn.arguments === 'string') { try { args = JSON.parse(fn.arguments); } catch { args = {}; } }
+      else if (fn.arguments && typeof fn.arguments === 'object') args = fn.arguments;
+      return { kind: 'tool', tool: fn.name, args };
+    }
     if (obj && typeof obj.final === 'string') return { kind: 'final', text: obj.final };
   }
-  return { kind: 'final', text: t };
+  return parseMarkupToolCall(body) || { kind: 'final', text: t };
+}
+
+/** Free models frequently answer with `<function=list_dir><parameter=path>.</parameter></function>`
+ *  instead of the JSON the prompt asks for. Reading that as a final answer ends the loop after one
+ *  step, so accept the two common markup shapes too. */
+function parseMarkupToolCall(body) {
+  const fn = body.match(/<function\s*[=:]\s*["']?([A-Za-z_][\w.-]*)/) ||
+             body.match(/<function\s+name\s*=\s*["']([A-Za-z_][\w.-]*)["']/);
+  if (!fn) return null;
+  const args = {};
+  const paramRe = /<parameter\s*[=:]\s*["']?([A-Za-z_][\w.-]*)["']?\s*>([\s\S]*?)<\/parameter>/g;
+  let m;
+  while ((m = paramRe.exec(body))) {
+    const raw = m[2].trim();
+    args[m[1]] = /^-?\d+$/.test(raw) ? Number(raw)
+      : /^(true|false)$/i.test(raw) ? raw.toLowerCase() === 'true'
+      : raw;
+  }
+  return { kind: 'tool', tool: fn[1], args };
 }
 
 async function runSubagent(prompt, opts = {}) {
@@ -400,7 +427,7 @@ const TOOL_SPEC = [
   ['freeai_compare', 'Send the SAME prompt to several named models and return the answers side by side.', { prompt: 'string', models: 'array', max_tokens: 'number' }, ['prompt', 'models']],
   ['freeai_batch', 'Send many INDEPENDENT prompts (no tools) and collect the answers in parallel.', { prompts: 'array', model: 'string', max_tokens: 'number', max_parallel: 'number' }, ['prompts']],
   ['freeai_debate', 'Two models argue a question for N rounds, then a third judges which was stronger.', { question: 'string', rounds: 'number', judge_model: 'string' }, ['question']],
-  ['freeai_review', 'One model drafts, a second reviews and scores it. Returns both.', { task: 'string', draft_model: 'string', review_model: 'string' }, [] + ['task']],
+  ['freeai_review', 'One model drafts, a second reviews and scores it. Returns both.', { task: 'string', draft_model: 'string', review_model: 'string' }, ['task']],
 
   // repo and code work
   ['freeai_explain_file', 'Subagent reads a file and explains what it does, its risks and its interfaces.', { path: 'string', root: 'string' }, ['path']],
