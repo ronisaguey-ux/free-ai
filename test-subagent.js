@@ -140,6 +140,29 @@ fs.writeFileSync(bigPath, big);
   check('edit_file refuses a missing find', parsed && parsed.missing === 'refused', out);
 }
 
+
+// ── background subagent job store ────────────────────────────────────────────────
+{
+  const { __jobs } = require('./mcp-server.js');
+  // A job id must be a plain id; anything else must be refused so a caller cannot walk
+  // the filesystem through the job tools.
+  let traversalRefused = false;
+  try { __jobs.subagentStatus('../../etc/passwd'); } catch { traversalRefused = true; }
+  check('a job id with a path is refused', traversalRefused);
+
+  let missingRefused = false;
+  try { __jobs.subagentStatus('sub_does_not_exist'); } catch { missingRefused = true; }
+  check('an unknown job id raises', missingRefused);
+
+  let badKill = false;
+  try { __jobs.subagentKill('not-a-job'); } catch { badKill = true; }
+  check('kill refuses a malformed id', badKill);
+
+  // list must always be a well-formed array, even with nothing spawned
+  const list = __jobs.subagentList();
+  check('subagent_list returns a jobs array', Array.isArray(list.jobs), JSON.stringify(list).slice(0, 120));
+}
+
 // ── report ───────────────────────────────────────────────────────────────────────
 let failed = 0;
 for (const [status, name, extra] of results) {

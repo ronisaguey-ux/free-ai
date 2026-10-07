@@ -21,7 +21,9 @@
 const http = require('node:http');
 const https = require('node:https');
 const fs = require('node:fs');
+const os = require('node:os');
 const path = require('node:path');
+const { spawn } = require('node:child_process');
 const { URL } = require('node:url');
 const { compressMessages, compressText } = require('./compressor');
 
@@ -595,6 +597,152 @@ async function runSubagent(prompt, opts = {}) {
   }
 }
 
+// ── background subagents ─────────────────────────────────────────────────────
+//
+// freeai_subagent blocks until the run finishes, so a caller that wants to do anything
+// else — or simply not hold a tool call open for twenty minutes — had to detach the
+// process itself and then poll files by hand. That is not a capability an MCP should
+// push onto its caller. These tools run a subagent in its own process and expose it as
+// a job: spawn returns an id, and status/log/result/list read it back. A job outlives
+// the calling tool call and the MCP process itself.
+const JOBS_DIR = process.env.FREEAI_JOBS_DIR
+  || path.join(os.homedir(), '.cache', 'free-ai', 'subagents');
+
+const RUNNER_SRC = `'use strict';
+const fs = require('fs');
+const payload = JSON.parse(fs.readFileSync(process.argv[2], 'utf8'));
+const { runSubagent } = require(payload.module);
+const { meta, result } = payload.paths;
+const writeMeta = (patch) => {
+  let m = {};
+  try { m = JSON.parse(fs.readFileSync(meta, 'utf8')); } catch { /* first write */ }
+  fs.writeFileSync(meta, JSON.stringify({ ...m, ...patch }, null, 2));
+};
+// stdio (below) already points at the log file, so passing logFile here too would
+// write every progress line twice. Let the redirect be the single sink.
+runSubagent(payload.prompt, { ...payload.opts })
+  .then((r) => {
+    fs.writeFileSync(result, JSON.stringify(r, null, 2));
+    writeMeta({ state: 'done', finished: Date.now(), steps: r.steps, model_used: r.model_used, stopped: r.stopped, answer: r.answer });
+  })
+  .catch((e) => {
+    const msg = String((e && e.stack) || e);
+    fs.writeFileSync(result, JSON.stringify({ error: msg }, null, 2));
+    writeMeta({ state: 'error', finished: Date.now(), error: msg });
+    process.exit(1);
+  });
+`;
+
+function _jobsRoot() {
+  fs.mkdirSync(JOBS_DIR, { recursive: true });
+  return JOBS_DIR;
+}
+
+function _jobDir(id) {
+  // Reject anything that is not a plain job id, so a caller cannot walk the tree.
+  if (!/^sub_[A-Za-z0-9_]+$/.test(String(id || ''))) throw new Error('invalid job id');
+  return path.join(_jobsRoot(), String(id));
+}
+
+function _readJson(f, fallback = null) {
+  try { return JSON.parse(fs.readFileSync(f, 'utf8')); } catch { return fallback; }
+}
+
+/** Start a subagent in its own detached process. Returns immediately with a job id. */
+function spawnSubagent(prompt, opts = {}) {
+  if (!String(prompt || '').trim()) throw new Error('prompt is required');
+  const id = 'sub_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2, 8);
+  const dir = path.join(_jobsRoot(), id);
+  fs.mkdirSync(dir, { recursive: true });
+  const paths = { meta: path.join(dir, 'job.json'), log: path.join(dir, 'log.txt'), result: path.join(dir, 'result.json') };
+  const payloadFile = path.join(dir, 'payload.json');
+  const runnerFile = path.join(dir, 'runner.js');
+
+  fs.writeFileSync(payloadFile, JSON.stringify({ prompt: String(prompt), opts, module: __filename, paths }, null, 2));
+  fs.writeFileSync(runnerFile, RUNNER_SRC);
+  fs.writeFileSync(paths.meta, JSON.stringify({
+    id, state: 'running', started: Date.now(), root: opts.root || REPO_ROOT,
+    max_steps: opts.maxSteps ?? 24, model: opts.model || 'freeai',
+    allow_write: !!opts.allowWrite, allow_bash: !!opts.allowBash,
+    prompt: String(prompt).slice(0, 500), pid: null,
+  }, null, 2));
+
+  const out = fs.openSync(paths.log, 'a');
+  const child = spawn(process.execPath, [runnerFile, payloadFile], {
+    detached: true,
+    stdio: ['ignore', out, out],
+    env: { ...process.env, FREEAI_SUBAGENT_JOB: id },
+    cwd: opts.root || REPO_ROOT,
+  });
+  child.unref();
+  fs.closeSync(out);
+  const meta = _readJson(paths.meta, {});
+  fs.writeFileSync(paths.meta, JSON.stringify({ ...meta, pid: child.pid }, null, 2));
+  return { job_id: id, state: 'running', pid: child.pid, log_file: paths.log, result_file: paths.result };
+}
+
+function subagentStatus(id) {
+  const dir = _jobDir(id);
+  const meta = _readJson(path.join(dir, 'job.json'));
+  if (!meta) throw new Error(`no such job ${id}`);
+  // A pid that is gone with no finished timestamp means the process died without
+  // writing a result (killed, OOM). Say so rather than reporting "running" forever.
+  if (meta.state === 'running' && meta.pid) {
+    let alive = true;
+    try { process.kill(meta.pid, 0); } catch { alive = false; }
+    if (!alive) meta.state = 'lost';
+  }
+  const hasResult = fs.existsSync(path.join(dir, 'result.json'));
+  return { job_id: id, state: meta.state, started: meta.started, finished: meta.finished || null,
+    steps: meta.steps ?? null, model_used: meta.model_used || null, stopped: meta.stopped || null,
+    pid: meta.pid || null, result_ready: hasResult, log_file: path.join(dir, 'log.txt'),
+    result_file: path.join(dir, 'result.json') };
+}
+
+function subagentLog(id, lines = 40) {
+  const dir = _jobDir(id);
+  const log = path.join(dir, 'log.txt');
+  if (!fs.existsSync(log)) return { job_id: id, lines: [], note: 'no log yet' };
+  const all = fs.readFileSync(log, 'utf8').split('\n').filter(Boolean);
+  const n = Math.max(1, Math.min(Number(lines) || 40, 2000));
+  return { job_id: id, total_lines: all.length, lines: all.slice(-n) };
+}
+
+function subagentResult(id) {
+  const dir = _jobDir(id);
+  const meta = _readJson(path.join(dir, 'job.json')) || {};
+  const result = _readJson(path.join(dir, 'result.json'));
+  if (!result) return { job_id: id, state: meta.state || 'unknown', ready: false, hint: 'still running — poll freeai_subagent_status' };
+  if (result.error) return { job_id: id, state: 'error', ready: true, error: result.error };
+  return { job_id: id, state: 'done', ready: true, answer: result.answer, steps: result.steps,
+    model_used: result.model_used, stopped: result.stopped, trace: result.trace || [] };
+}
+
+function subagentList() {
+  const root = _jobsRoot();
+  const jobs = [];
+  for (const name of fs.readdirSync(root)) {
+    if (!name.startsWith('sub_')) continue;
+    const meta = _readJson(path.join(root, name, 'job.json'));
+    if (!meta) continue;
+    jobs.push({ job_id: name, state: meta.state, started: meta.started,
+      root: meta.root, has_result: fs.existsSync(path.join(root, name, 'result.json')) });
+  }
+  jobs.sort((a, b) => (b.started || 0) - (a.started || 0));
+  return { jobs, jobs_dir: root };
+}
+
+function subagentKill(id) {
+  const meta = _readJson(path.join(_jobDir(id), 'job.json'));
+  if (!meta) throw new Error(`no such job ${id}`);
+  if (!meta.pid) return { job_id: id, killed: false, reason: 'no pid recorded' };
+  try { process.kill(meta.pid, 'SIGKILL'); }
+  catch (e) { return { job_id: id, killed: false, reason: String(e.message) }; }
+  const mpath = path.join(_jobDir(id), 'job.json');
+  fs.writeFileSync(mpath, JSON.stringify({ ...meta, state: 'killed', finished: Date.now() }, null, 2));
+  return { job_id: id, killed: true };
+}
+
 function summarise(v) {
   const s = safeJson(v);
   return s.length > 300 ? s.slice(0, 300) + '...' : s;
@@ -630,6 +778,12 @@ const TOOL_SPEC = [
 
   // subagents and fan-out
   ['freeai_subagent', 'Run a multi-step SUBAGENT on a free model that reads/edits files and runs commands, then answers. Read-only unless allow_write/allow_bash. Pass log_file to watch its steps live with tail -f.', { prompt: 'string', root: 'string', max_steps: 'number', model: 'string', allow_write: 'boolean', allow_bash: 'boolean', log_file: 'string' }, ['prompt']],
+  ['freeai_subagent_spawn', 'Start a subagent in the BACKGROUND and return a job id immediately. Poll it with freeai_subagent_status / _log / _result. This is the way to run a long task without holding a tool call open.', { prompt: 'string', root: 'string', max_steps: 'number', model: 'string', allow_write: 'boolean', allow_bash: 'boolean' }, ['prompt']],
+  ['freeai_subagent_status', 'State of a background subagent: running / done / error / killed / lost, plus steps and where its log and result are.', { job_id: 'string' }, ['job_id']],
+  ['freeai_subagent_log', 'The last N progress lines of a background subagent (its step-by-step trace).', { job_id: 'string', lines: 'number' }, ['job_id']],
+  ['freeai_subagent_result', 'The answer (and trace) of a background subagent. Reports not-ready while it still runs.', { job_id: 'string' }, ['job_id']],
+  ['freeai_subagent_list', 'Every background subagent this router has spawned, newest first.', {}, []],
+  ['freeai_subagent_kill', 'Stop a running background subagent.', { job_id: 'string' }, ['job_id']],
   ['freeai_swarm', 'Run several subagents IN PARALLEL on the free chain and collect every answer.', { prompts: 'array', max_steps: 'number', max_parallel: 'number', allow_write: 'boolean', allow_bash: 'boolean' }, ['prompts']],
   ['freeai_compare', 'Send the SAME prompt to several named models and return the answers side by side.', { prompt: 'string', models: 'array', max_tokens: 'number' }, ['prompt', 'models']],
   ['freeai_batch', 'Send many INDEPENDENT prompts (no tools) and collect the answers in parallel.', { prompts: 'array', model: 'string', max_tokens: 'number', max_parallel: 'number' }, ['prompts']],
@@ -912,6 +1066,16 @@ const HANDLERS = {
   freeai_set_compression: async (a) => postJson('/admin/compression', { level: String(a.level || '') }),
 
   // ── subagents and fan-out ─────────────────────────────────────────────────
+  freeai_subagent_spawn: async (a) => spawnSubagent(String(a.prompt), {
+    root: a.root, allowWrite: !!a.allow_write, allowBash: !!a.allow_bash,
+    model: a.model, maxSteps: a.max_steps,
+  }),
+  freeai_subagent_status: async (a) => subagentStatus(String(a.job_id)),
+  freeai_subagent_log: async (a) => subagentLog(String(a.job_id), a.lines),
+  freeai_subagent_result: async (a) => subagentResult(String(a.job_id)),
+  freeai_subagent_list: async () => subagentList(),
+  freeai_subagent_kill: async (a) => subagentKill(String(a.job_id)),
+
   freeai_subagent: async (a) => runSubagent(String(a.prompt), {
     maxSteps: a.max_steps || 8, model: a.model || 'freeai',
     root: a.root, allowWrite: !!a.allow_write, allowBash: !!a.allow_bash,
@@ -1299,4 +1463,5 @@ module.exports = {
   // Exported so the tool layer and the reply parser can be tested without a model in the
   // loop — the parser and the edit/read/grep tools are where the subagent's failures lived.
   __tools: { toolReadFile, toolListDir, toolGrep, toolWriteFile, toolEditFile, runTool, toolDocs, balancedObjects, repairJsonEscapes },
+  __jobs: { spawnSubagent, subagentStatus, subagentLog, subagentResult, subagentList, subagentKill, JOBS_DIR },
 };
