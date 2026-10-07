@@ -285,9 +285,37 @@ function balancedObjects(body) {
 function coerceArgs(v) {
   if (v && typeof v === 'object') return v;
   if (typeof v === 'string') {
-    try { const o = JSON.parse(v); return (o && typeof o === 'object') ? o : {}; } catch { return {}; }
+    const o = tryParseJson(v);
+    return (o && typeof o === 'object') ? o : {};
   }
   return {};
+}
+
+/** Repair backslashes that are not valid JSON escapes.
+ *
+   *  A model writing a shell command such as grep 'a\|b' emits `\|`, which JSON rejects
+   *  ("invalid escape"), so the whole tool call failed to parse and was read as a final
+   *  answer — ending the loop after a step. Walk the string and double any backslash that
+   *  does not begin a legal escape, leaving real escapes (\n, \", \\, \uXXXX ...) intact. */
+function repairJsonEscapes(s) {
+  let out = '';
+  for (let i = 0; i < s.length; i++) {
+    const ch = s[i];
+    if (ch !== '\\') { out += ch; continue; }
+    const nxt = s[i + 1];
+    if (nxt === undefined) { out += '\\\\'; continue; }
+    if (nxt === 'u' && /^[0-9a-fA-F]{4}$/.test(s.slice(i + 2, i + 6))) {
+      out += s.slice(i, i + 6); i += 5; continue;
+    }
+    if ('"\\/bfnrt'.includes(nxt)) { out += ch + nxt; i += 1; continue; }
+    out += '\\\\' + nxt; i += 1; // stray backslash: escape it
+  }
+  return out;
+}
+
+function tryParseJson(c) {
+  try { return JSON.parse(c); } catch { /* try repaired below */ }
+  try { return JSON.parse(repairJsonEscapes(c)); } catch { return undefined; }
 }
 
 /** Recognise a tool call in any of the shapes free models emit. Returns null when the
@@ -327,8 +355,8 @@ function parseAgentReply(text) {
   const bodies = fence ? [fence[1], t] : [t];
   for (const body of bodies) {
     for (const c of balancedObjects(body)) {
-      let obj;
-      try { obj = JSON.parse(c); } catch { continue; }
+      const obj = tryParseJson(c);
+      if (obj === undefined) continue;
       const call = toolFromObject(obj);
       if (call) return call;
       if (obj && typeof obj.final === 'string') return { kind: 'final', text: obj.final };
