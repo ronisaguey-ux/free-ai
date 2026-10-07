@@ -32,12 +32,17 @@ const { compressMessages, compressText } = require('./compressor');
 // least likely thing to be suspected. So the redirect happens BEFORE anything else
 // runs, and it covers every console method. Diagnostics still reach the operator's log
 // because stderr is passed straight through.
-for (const level of ['log', 'info', 'warn', 'error', 'debug', 'trace']) {
-  console[level] = (...args) => {
-    try {
-      process.stderr.write(args.map((x) => (typeof x === 'string' ? x : safeJson(x))).join(' ') + '\n');
-    } catch { /* stderr gone */ }
-  };
+// Only when THIS file is the server. As a library, hijacking the global console would
+// silently swallow every console.log in the requiring process (a test's own output, for
+// one) — the wire only needs protecting when we actually own the stdio channel.
+if (require.main === module) {
+  for (const level of ['log', 'info', 'warn', 'error', 'debug', 'trace']) {
+    console[level] = (...args) => {
+      try {
+        process.stderr.write(args.map((x) => (typeof x === 'string' ? x : safeJson(x))).join(' ') + '\n');
+      } catch { /* stderr gone */ }
+    };
+  }
 }
 
 function safeJson(x) {
@@ -152,11 +157,22 @@ function toolReadFile(args) {
   const abs = resolveIn(args.path);
   const max = Math.max(200, Math.min(Number(args.max_chars) || 20000, 200000));
   const text = fs.readFileSync(abs, 'utf8');
-  const cut = text.slice(0, max);
+  // `offset` is a 1-based LINE number, which is how a caller reasons about a file it has
+  // already grepped. Without it a large file could only ever be read from the top, so a
+  // model looking for something at line 1800 re-read 1800 lines it had already seen.
+  const lines = text.split('\n');
+  const from = Math.max(1, Math.min(Number(args.offset) || 1, Math.max(1, lines.length)));
+  const window = lines.slice(from - 1).join('\n');
+  const cut = window.slice(0, max);
+  const shownLines = cut.split('\n').length;
+  const more = from - 1 + shownLines < lines.length;
   return {
     path: path.relative(REPO_ROOT, abs),
-    chars: text.length,
-    truncated: text.length > cut.length,
+    total_lines: lines.length,
+    from_line: from,
+    to_line: Math.min(lines.length, from + shownLines - 1),
+    truncated: more,
+    hint: more ? `more below — call read_file again with offset=${from + shownLines}` : 'end of file',
     content: cut,
   };
 }
@@ -177,6 +193,18 @@ function toolGrep(args) {
   const limit = Math.max(1, Math.min(Number(args.limit) || 60, 500));
   const hits = [];
   const skip = new Set(['node_modules', '.git', '.venv', '__pycache__', 'dist', 'build']);
+  // A FILE path is a legitimate grep target and used to raise ENOTDIR, which reads to a
+  // model as a broken tool rather than a normal search. Search just that file.
+  try {
+    if (fs.statSync(root).isFile()) {
+      fs.readFileSync(root, 'utf8').split('\n').forEach((line, i) => {
+        if (hits.length < limit && re.test(line)) {
+          hits.push({ file: path.relative(REPO_ROOT, root), line: i + 1, text: line.slice(0, 200) });
+        }
+      });
+      return { pattern: needle, hits, truncated: hits.length >= limit };
+    }
+  } catch { /* not a file; fall through to the directory walk */ }
   const walk = (dir, depth) => {
     if (hits.length >= limit || depth > 8) return;
     for (const d of fs.readdirSync(dir, { withFileTypes: true })) {
@@ -205,6 +233,25 @@ function toolWriteFile(args) {
   fs.mkdirSync(path.dirname(abs), { recursive: true });
   fs.writeFileSync(abs, String(args.content ?? ''), 'utf8');
   return { wrote: path.relative(REPO_ROOT, abs), bytes: Buffer.byteLength(String(args.content ?? '')) };
+}
+
+function toolEditFile(args) {
+  const abs = resolveIn(args.path);
+  const find = String(args.find ?? '');
+  const replace = String(args.replace ?? '');
+  if (!find) throw new Error('find is required');
+  const text = fs.readFileSync(abs, 'utf8');
+  const count = text.split(find).length - 1;
+  if (count === 0) {
+    throw new Error('find text is not present in ' + path.relative(REPO_ROOT, abs)
+      + ' — read the file and copy the exact text (whitespace matters)');
+  }
+  if (count > 1 && !args.replace_all) {
+    throw new Error(`find text appears ${count} times — pass replace_all:true or include more context to make it unique`);
+  }
+  const out = args.replace_all ? text.split(find).join(replace) : text.replace(find, replace);
+  fs.writeFileSync(abs, out, 'utf8');
+  return { edited: path.relative(REPO_ROOT, abs), replacements: args.replace_all ? count : 1, bytes: Buffer.byteLength(out) };
 }
 
 async function toolRunBash(args) {
@@ -237,6 +284,7 @@ async function runTool(name, args, allow = {}) {
     case 'list_dir': return toolListDir(args);
     case 'grep': return toolGrep(args);
     case 'write_file': return toolWriteFile(args);
+    case 'edit_file': return toolEditFile(args);
     case 'run_bash': return toolRunBash(args);
     default: throw new Error(`unknown tool ${name}`);
   }
@@ -244,11 +292,14 @@ async function runTool(name, args, allow = {}) {
 
 function toolDocs(allowWrite, allowBash) {
   const lines = [
-    'read_file  {"path": "...", "max_chars": 20000}   read a file (root-relative)',
+    'read_file  {"path": "...", "offset": 1, "max_chars": 20000}   read a file; offset is a 1-based LINE number',
     'list_dir   {"path": "..."}                       list a directory',
     'grep       {"pattern": "regex", "path": ".", "ignore_case": false, "limit": 60}   search files',
   ];
-  if (allowWrite) lines.push('write_file {"path": "...", "content": "..."}             write a file');
+  if (allowWrite) {
+    lines.push('write_file {"path": "...", "content": "..."}             create or overwrite a file');
+    lines.push('edit_file  {"path": "...", "find": "exact text", "replace": "new text"}   surgical change to an existing file');
+  }
   if (allowBash) lines.push('run_bash   {"command": "...", "timeout_ms": 30000}        run a shell command');
   return lines.join('\n');
 }
@@ -359,12 +410,15 @@ function parseAgentReply(text) {
       if (obj === undefined) continue;
       const call = toolFromObject(obj);
       if (call) return call;
-      if (obj && typeof obj.final === 'string') return { kind: 'final', text: obj.final };
+      if (obj && typeof obj.final === 'string') return { kind: 'final', text: obj.final, explicit: true };
+      if (obj && typeof obj.answer === 'string') return { kind: 'final', text: obj.answer, explicit: true };
     }
     const mk = parseMarkupToolCall(body);
     if (mk) return mk;
   }
-  return { kind: 'final', text: t };
+  // Not an explicit final. Callers that drive tools treat this as UNPARSEABLE rather than
+  // a completion, so a garbled tool attempt is not mistaken for a finished answer.
+  return { kind: 'final', text: t, explicit: false };
 }
 
 /** Free models frequently answer with `<function=list_dir><parameter=path>.</parameter></function>`
@@ -388,23 +442,46 @@ function parseMarkupToolCall(body) {
 
 async function runSubagent(prompt, opts = {}) {
   const {
-    maxSteps = 8, model = 'freeai', allowWrite = false, allowBash = false,
+    maxSteps = 24, model = 'freeai', allowWrite = false, allowBash = false,
     timeoutMs = 240000, temperature, system,
   } = opts;
+
+  // Progress must be observable. A subagent can run for many minutes; without a signal
+  // the caller cannot tell "working" from "wedged", and a slow run looks identical to a
+  // hang. Steps go to stderr (stdout is the MCP protocol and must stay clean) and, when
+  // a path is given, to that file — so a detached run can be watched with `tail -f`.
+  const logFile = opts.logFile || process.env.FREEAI_SUBAGENT_LOG || '';
+  const onStep = typeof opts.onStep === 'function' ? opts.onStep : null;
+  const emit = (line) => {
+    const text = `[subagent ${new Date().toISOString()}] ${line}`;
+    try { process.stderr.write(text + '\n'); } catch { /* stderr closed */ }
+    if (logFile) { try { fs.appendFileSync(logFile, text + '\n'); } catch { /* ignore */ } }
+    if (onStep) { try { onStep(line); } catch { /* caller callback must not break the run */ } }
+  };
 
   const sys = system || [
     'You are a subagent with tools. Work step by step until the task is done.',
     '',
+    'RULES — follow these exactly:',
+    '1. Act; do not narrate. Reply with a tool call, not a description of one.',
+    '2. Read before you write, but read EFFICIENTLY: use grep to find the exact line range,',
+    '   then read_file with offset to read only that range. Never read a large file from the top twice.',
+    '3. Prefer edit_file for a change to an existing file; use write_file to create a new one.',
+    '4. Target the file named in the task. Do not grep the whole repo for something you were told.',
+    '5. Do not repeat a tool call you already made with the same arguments — you already have its result.',
+    '6. When the task is done (and, if it said to, the tests pass), stop and answer.',
+    '',
     'To use a tool, reply with ONLY this JSON and nothing else:',
     '{"tool":"<name>","args":{...}}',
+    'A bare {"name":"...","parameters":{...}} is also accepted.',
     '',
     'Available tools:',
     toolDocs(allowWrite, allowBash),
     '',
-    'When you have the answer, reply with ONLY:',
-    '{"final":"<your answer, in plain language>"}',
+    'When you are finished, reply with ONLY:',
+    '{"final":"<what you changed, file:line, and the exact verification you ran and its result>"}',
     '',
-    'Never invent a tool result. If a tool errors, say so in your final answer.',
+    'Never invent a tool result. If the task cannot be done, say so plainly in the final.',
   ].join('\n');
 
   const messages = [
@@ -413,56 +490,106 @@ async function runSubagent(prompt, opts = {}) {
   ];
 
   const trace = [];
+  let finalNudges = 0;         // bounded re-asks when a reply is neither a tool call nor a final
+  const seenCalls = new Map(); // "tool\u0000args" -> count, to catch a model spinning
   const _prevRoot = REPO_ROOT;
   if (opts.root) REPO_ROOT = path.resolve(String(opts.root));
+  emit(`start model=${model} max_steps=${maxSteps} write=${allowWrite} bash=${allowBash} root=${REPO_ROOT}`);
   try {
-  for (let step = 1; step <= maxSteps; step++) {
-    const r = await chat(messages, { model, timeoutMs, temperature, extra: { messages_meta: { step } } });
-    const parsed = parseAgentReply(r.text);
+    for (let step = 1; step <= maxSteps; step++) {
+      const r = await chat(messages, { model, timeoutMs, temperature, extra: { messages_meta: { step } } });
+      const parsed = parseAgentReply(r.text);
 
-    if (parsed.kind === 'final') {
-      return {
-        answer: parsed.text,
-        steps: step,
-        model_used: r.model_used,
-        compression: r.compression,
-        trace,
-        stopped: 'final',
-      };
-    }
+      if (parsed.kind === 'final') {
+        // A reply that did no work and is not an explicit {"final":...} is almost always a
+        // garbled tool call (measured: the model emitted <dots_function_call> markup that
+        // does not parse). Accepting it ends the run having changed nothing, so nudge for a
+        // real tool call first. Bounded to 2, so a genuine no-tool answer still gets through.
+        const didWork = trace.length > 0;
+        if (!parsed.explicit && !didWork && finalNudges < 2) {
+          finalNudges += 1;
+          emit(`step ${step}: reply was neither a tool call nor a final — nudge ${finalNudges}/2`);
+          messages.push({ role: 'assistant', content: r.text });
+          messages.push({
+            role: 'user',
+            content: 'That was not a usable action and the task is NOT complete. Reply with ONLY one tool call: '
+              + '{"tool":"<name>","args":{...}}  — valid names are read_file, list_dir, grep'
+              + (allowWrite ? ', write_file, edit_file' : '') + (allowBash ? ', run_bash' : '') + '.',
+          });
+          continue;
+        }
+        emit(`step ${step}: FINAL (${String(parsed.text || '').length} chars) via ${r.model_used}`);
+        return {
+          answer: parsed.text,
+          steps: step,
+          model_used: r.model_used,
+          compression: r.compression,
+          trace,
+          stopped: 'final',
+        };
+      }
 
-    let result;
-    try {
-      // runTool refuses the write tools unless the caller opted in, so the check lives
-      // in ONE place instead of being repeated per call site.
-      result = await runTool(parsed.tool, parsed.args, {
-        write: allowWrite, bash: allowBash,
+      // A reply that is neither a tool call nor a final is a format miss. Nudge once in
+      // the exact shape; without this the loop silently repeats the same broken reply.
+      if (parsed.kind !== 'tool' || !parsed.tool) {
+        emit(`step ${step}: unparseable reply — nudging for a tool call or a final`);
+        messages.push({ role: 'assistant', content: r.text });
+        messages.push({
+          role: 'user',
+          content: 'That reply was not a tool call and not a final. Reply with ONLY '
+            + '{"tool":"<name>","args":{...}} or {"final":"..."}.',
+        });
+        continue;
+      }
+
+      const sig = parsed.tool + '\u0000' + safeJson(parsed.args);
+      const times = (seenCalls.get(sig) || 0) + 1;
+      seenCalls.set(sig, times);
+
+      let result;
+      try {
+        result = await runTool(parsed.tool, parsed.args, { write: allowWrite, bash: allowBash });
+      } catch (e) {
+        result = { error: String(e.message || e) };
+      }
+      const err = result && result.error ? ' ERROR: ' + result.error : '';
+      emit(`step ${step}: ${parsed.tool}${err}${times > 1 ? ` (repeat x${times})` : ''}`);
+      trace.push({ step, tool: parsed.tool, args: parsed.args, result_summary: summarise(result) });
+
+      messages.push({ role: 'assistant', content: r.text });
+
+      // The same call with the same arguments a third time means the model is stuck, not
+      // progressing; the result is already in the transcript. Say so, and require a
+      // different action or a final — otherwise it burns the whole step budget spinning.
+      if (times >= 3) {
+        messages.push({
+          role: 'user',
+          content: `TOOL RESULT for ${parsed.tool}:\n${JSON.stringify(result).slice(0, 20000)}\n\n`
+            + 'You have now called this exact tool with these exact arguments ' + times
+            + ' times. The result will not change. Take a DIFFERENT action, or reply now with {"final":"..."}.',
+        });
+        continue;
+      }
+
+      messages.push({
+        role: 'user',
+        content: `TOOL RESULT for ${parsed.tool}:\n${JSON.stringify(result).slice(0, 20000)}\n\n`
+          + 'Continue. Reply with the next tool call, or {"final":"..."} when done.',
       });
-    } catch (e) {
-      result = { error: String(e.message || e) };
     }
-    trace.push({ step, tool: parsed.tool, args: parsed.args, result_summary: summarise(result) });
 
-    messages.push({ role: 'assistant', content: r.text });
-    messages.push({
-      role: 'user',
-      content: `TOOL RESULT for ${parsed.tool}:\n${JSON.stringify(result).slice(0, 20000)}\n\n`
-        + 'Continue. Reply with the next tool call, or {"final":"..."} when done.',
-    });
-  }
-
-  // Out of steps: ask once for a plain answer so the caller gets something usable
-  // rather than an empty failure.
-  messages.push({ role: 'user', content: 'You are out of tool steps. Reply now with {"final":"..."} summarising what you found.' });
-  const last = await chat(messages, { model, timeoutMs, temperature });
-  return {
-    answer: parseAgentReply(last.text).text || last.text,
-    steps: maxSteps,
-    model_used: last.model_used,
-    compression: last.compression,
-    trace,
-    stopped: 'max_steps',
-  };
+    // Out of steps: ask once for a plain answer so the caller gets something usable.
+    emit(`out of steps (${maxSteps}) — demanding a final answer`);
+    messages.push({ role: 'user', content: 'You are out of tool steps. Reply now with {"final":"..."} summarising what you found.' });
+    const last = await chat(messages, { model, timeoutMs, temperature });
+    return {
+      answer: parseAgentReply(last.text).text || last.text,
+      steps: maxSteps,
+      model_used: last.model_used,
+      compression: last.compression,
+      trace,
+      stopped: 'max_steps',
+    };
   } finally {
     REPO_ROOT = _prevRoot;
   }
@@ -502,7 +629,7 @@ const TOOL_SPEC = [
   ['freeai_set_compression', 'Change the router compression level at runtime.', { level: ['off', 'safe', 'balanced'] }, ['level']],
 
   // subagents and fan-out
-  ['freeai_subagent', 'Run a multi-step SUBAGENT on a free model: it reads files, greps, then answers. Read-only unless allow_write/allow_bash.', { prompt: 'string', root: 'string', max_steps: 'number', model: 'string', allow_write: 'boolean', allow_bash: 'boolean' }, ['prompt']],
+  ['freeai_subagent', 'Run a multi-step SUBAGENT on a free model that reads/edits files and runs commands, then answers. Read-only unless allow_write/allow_bash. Pass log_file to watch its steps live with tail -f.', { prompt: 'string', root: 'string', max_steps: 'number', model: 'string', allow_write: 'boolean', allow_bash: 'boolean', log_file: 'string' }, ['prompt']],
   ['freeai_swarm', 'Run several subagents IN PARALLEL on the free chain and collect every answer.', { prompts: 'array', max_steps: 'number', max_parallel: 'number', allow_write: 'boolean', allow_bash: 'boolean' }, ['prompts']],
   ['freeai_compare', 'Send the SAME prompt to several named models and return the answers side by side.', { prompt: 'string', models: 'array', max_tokens: 'number' }, ['prompt', 'models']],
   ['freeai_batch', 'Send many INDEPENDENT prompts (no tools) and collect the answers in parallel.', { prompts: 'array', model: 'string', max_tokens: 'number', max_parallel: 'number' }, ['prompts']],
@@ -788,6 +915,7 @@ const HANDLERS = {
   freeai_subagent: async (a) => runSubagent(String(a.prompt), {
     maxSteps: a.max_steps || 8, model: a.model || 'freeai',
     root: a.root, allowWrite: !!a.allow_write, allowBash: !!a.allow_bash,
+    model: a.model, logFile: a.log_file,
   }),
 
   freeai_swarm: async (a) => {
@@ -1145,19 +1273,30 @@ async function handle(msg) {
   }
 }
 
-process.stdin.on('data', (chunk) => {
-  buffer += chunk.toString('utf8');
-  let nl;
-  while ((nl = buffer.indexOf('\n')) !== -1) {
-    const line = buffer.slice(0, nl).trim();
-    buffer = buffer.slice(nl + 1);
-    if (!line) continue;
-    let msg;
-    try { msg = JSON.parse(line); } catch { continue; }   // ignore a malformed frame
-    handle(msg);
-  }
-});
+// The stdio MCP loop is attached ONLY when this file is the entry point. Requiring it (a
+// test, a detached runner, another module) previously hijacked stdin and exited the whole
+// process on its EOF — that is why a detached subagent runner had to be wrapped in
+// `tail -f /dev/null |`. As a library it must leave stdin alone.
+if (require.main === module) {
+  process.stdin.on('data', (chunk) => {
+    buffer += chunk.toString('utf8');
+    let nl;
+    while ((nl = buffer.indexOf('\n')) !== -1) {
+      const line = buffer.slice(0, nl).trim();
+      buffer = buffer.slice(nl + 1);
+      if (!line) continue;
+      let msg;
+      try { msg = JSON.parse(line); } catch { continue; }   // ignore a malformed frame
+      handle(msg);
+    }
+  });
 
-process.stdin.on('end', () => process.exit(0));
+  process.stdin.on('end', () => process.exit(0));
+}
 
-module.exports = { callTool, runSubagent, parseAgentReply, TOOLS, chat };
+module.exports = {
+  callTool, runSubagent, parseAgentReply, TOOLS, chat,
+  // Exported so the tool layer and the reply parser can be tested without a model in the
+  // loop — the parser and the edit/read/grep tools are where the subagent's failures lived.
+  __tools: { toolReadFile, toolListDir, toolGrep, toolWriteFile, toolEditFile, runTool, toolDocs, balancedObjects, repairJsonEscapes },
+};
