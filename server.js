@@ -342,6 +342,35 @@ async function chat(body, cfgRes) {
       clearTimeout(t);
 
       if (res.ok) {
+        // An HTTP 200 is not an answer. Reasoning models intermittently return a
+        // well-formed response whose assistant content is EMPTY (finish_reason
+        // "length" after the hidden thinking ate the budget), and counting that as a
+        // success stops the chain at a model that produced nothing — the caller sees
+        // an empty reply, or a JSON parse failure, from a router whose whole contract
+        // is "the first model that ANSWERS wins". Measured on this box: the same
+        // prompt returned valid JSON twice and empty on the third call.
+        //
+        // Only checkable on the buffered path: a stream cannot be inspected without
+        // consuming it. An empty stream is still forwarded as-is.
+        if (!wantStream) {
+          let parsed = null;
+          try { parsed = await res.json(); } catch { parsed = null; }
+          const choice = parsed && Array.isArray(parsed.choices) ? parsed.choices[0] : null;
+          const content = choice && choice.message ? choice.message.content : null;
+          const hasText = typeof content === 'string' ? content.trim().length > 0
+            : Array.isArray(content) && content.length > 0;
+          if (!hasText) {
+            const why = 'empty completion (http 200, no content)';
+            penalise(m, why);
+            tried.push(`${m.provider}/${m.model} ${why}`);
+            continue;
+          }
+          succeeded(m);
+          cfgRes.setHeader('x-free-ai-model', `${m.provider}/${m.model}`);
+          cfgRes.setHeader('x-free-ai-attempts', String(tried.length + 1));
+          cfgRes.setHeader('content-type', res.headers.get('content-type') || 'application/json');
+          return { status: 200, body: parsed };
+        }
         succeeded(m);
         cfgRes.setHeader('x-free-ai-model', `${m.provider}/${m.model}`);
         cfgRes.setHeader('x-free-ai-attempts', String(tried.length + 1));
