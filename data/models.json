@@ -33,18 +33,6 @@
     "rank": 3
   },
   {
-    "provider": "aihorde",
-    "model": "koboldcpp/gemma-3-4b-it-heretic",
-    "base": "https://oai.aihorde.net/v1",
-    "key_env": null,
-    "no_key": true,
-    "timeout_ms": 90000,
-    "free_type": "keyless",
-    "probe": "2/4, this id only, anonymous key",
-    "rank": 4,
-    "anon_key": "0000000000"
-  },
-  {
     "provider": "kilo",
     "model": "stepfun/step-3.7-flash:free",
     "base": "https://api.kilo.ai/api/gateway",

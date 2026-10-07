@@ -222,7 +222,7 @@ function succeeded(m) {
 }
 
 /** In rank order, skipping anything on cooldown, then anything with no configured key. */
-function chain({ includeCooling = false } = {}) {
+function chain({ includeCooling = false, prefer = null } = {}) {
   const list = [...MODELS].sort((a, b) => a.rank - b.rank);
   const ready = [], cold = [];
   for (const m of list) {
@@ -230,7 +230,25 @@ function chain({ includeCooling = false } = {}) {
     if (!usable) continue;
     (cooling(m) ? cold : ready).push(m);
   }
-  return includeCooling ? [...ready, ...cold] : ready;
+  let ordered = includeCooling ? [...ready, ...cold] : ready;
+  // An explicit model id (the caller asked for THIS one) goes first, but the rest of the
+  // chain still follows as fallback. Previously body.model was ignored entirely, so a
+  // caller pinning a healthy model was silently served by whatever rank came up next —
+  // measured: every request landed on a dead rank-4 entry while rank 1 was fine.
+  const want = prefer && prefer !== 'freeai' ? String(prefer).trim() : '';
+  if (want) {
+    const match = (m) => m.model === want || `${m.provider}/${m.model}` === want;
+    const i = ordered.findIndex(match);
+    if (i > 0) ordered = [ordered[i], ...ordered.slice(0, i), ...ordered.slice(i + 1)];
+    else if (i === -1) {
+      // Pinned model is cooling or absent from `ready`. Try it anyway, first — the
+      // caller named it — then fall back to the rest.
+      const full = [...MODELS].sort((a, b) => a.rank - b.rank);
+      const j = full.findIndex(match);
+      if (j !== -1) ordered = [full[j], ...ordered.filter((m) => !match(m))];
+    }
+  }
+  return ordered;
 }
 
 // ── upstream call ─────────────────────────────────────────────────────────────
@@ -296,7 +314,7 @@ function isModelUnavailable(status, text) {
 async function chat(body, cfgRes) {
   const wantStream = !!body.stream;
   const tried = [];
-  const candidates = chain();
+  const candidates = chain({ prefer: body.model });
 
   if (!candidates.length) {
     const soonest = [...MODELS].sort((a, b) => s(a).until - s(b).until)[0];
