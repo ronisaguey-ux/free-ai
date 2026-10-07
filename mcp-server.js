@@ -253,38 +253,90 @@ function toolDocs(allowWrite, allowBash) {
   return lines.join('\n');
 }
 
+/** Every balanced {...} block in the text, so a tool call after prose or inside a
+ *  fence is still found — the old parser only looked at the FIRST block from the first
+ *  '{', which a stray brace in narration could throw off. */
+function balancedObjects(body) {
+  const out = [];
+  let i = 0;
+  while (i < body.length) {
+    if (body[i] !== '{') { i++; continue; }
+    let depth = 0, inStr = false, esc = false, closed = false;
+    for (let j = i; j < body.length; j++) {
+      const ch = body[j];
+      if (inStr) {
+        if (esc) esc = false;
+        else if (ch === '\\') esc = true;
+        else if (ch === '"') inStr = false;
+        continue;
+      }
+      if (ch === '"') { inStr = true; continue; }
+      if (ch === '{') depth++;
+      else if (ch === '}') {
+        depth--;
+        if (depth === 0) { out.push(body.slice(i, j + 1)); i = j + 1; closed = true; break; }
+      }
+    }
+    if (!closed) i++; // unbalanced from here on; step past it rather than loop
+  }
+  return out;
+}
+
+function coerceArgs(v) {
+  if (v && typeof v === 'object') return v;
+  if (typeof v === 'string') {
+    try { const o = JSON.parse(v); return (o && typeof o === 'object') ? o : {}; } catch { return {}; }
+  }
+  return {};
+}
+
+/** Recognise a tool call in any of the shapes free models emit. Returns null when the
+ *  object is not a tool call. */
+function toolFromObject(obj) {
+  if (!obj || typeof obj !== 'object') return null;
+  // {"tool":"name","args|parameters|params":{...}}
+  if (typeof obj.tool === 'string' && !Array.isArray(obj.tool_calls)) {
+    return { kind: 'tool', tool: obj.tool, args: obj.args || obj.parameters || obj.params || {} };
+  }
+  // OpenAI shape: {"tool_calls":[{"function":{"name":..,"arguments":..}}]}
+  if (Array.isArray(obj.tool_calls) && obj.tool_calls.length) {
+    const fn = obj.tool_calls[0] && obj.tool_calls[0].function;
+    if (fn && typeof fn.name === 'string') return { kind: 'tool', tool: fn.name, args: coerceArgs(fn.arguments) };
+  }
+  // A bare function call — what the hosted models actually emit:
+  //   {"name":"read_file","parameters":{"path":"a.js"}}
+  if (typeof obj.name === 'string') {
+    const a = obj.parameters !== undefined ? obj.parameters
+      : obj.arguments !== undefined ? obj.arguments
+      : obj.args !== undefined ? obj.args : undefined;
+    if (a !== undefined) return { kind: 'tool', tool: obj.name, args: coerceArgs(a) };
+  }
+  // {"function":{"name":..,"arguments":..}} with no wrapper.
+  if (obj.function && typeof obj.function.name === 'string') {
+    return { kind: 'tool', tool: obj.function.name, args: coerceArgs(obj.function.arguments) };
+  }
+  return null;
+}
+
 /** Pull the FIRST tool call out of a reply, or null if the reply is a final answer. */
 function parseAgentReply(text) {
   const t = String(text || '');
   const fence = t.match(/```(?:json)?\s*([\s\S]*?)```/);
-  const body = fence ? fence[1] : t;
-  const candidates = [];
-  const start = body.indexOf('{');
-  if (start !== -1) {
-    let depth = 0;
-    for (let i = start; i < body.length; i++) {
-      if (body[i] === '{') depth += 1;
-      else if (body[i] === '}') {
-        depth -= 1;
-        if (depth === 0) { candidates.push(body.slice(start, i + 1)); break; }
-      }
+  // Try the fenced body first (that is where a well-behaved model puts its call), then
+  // the whole reply — a model that narrates and then calls a tool must still be read.
+  const bodies = fence ? [fence[1], t] : [t];
+  for (const body of bodies) {
+    for (const c of balancedObjects(body)) {
+      let obj;
+      try { obj = JSON.parse(c); } catch { continue; }
+      const call = toolFromObject(obj);
+      if (call) return call;
+      if (obj && typeof obj.final === 'string') return { kind: 'final', text: obj.final };
     }
+    const mk = parseMarkupToolCall(body);
+    if (mk) return mk;
   }
-  for (const c of candidates) {
-    let obj;
-    try { obj = JSON.parse(c); } catch { continue; }
-    if (obj && typeof obj.tool === 'string') return { kind: 'tool', tool: obj.tool, args: obj.args || {} };
-    const call = Array.isArray(obj && obj.tool_calls) ? obj.tool_calls[0] : null;
-    const fn = call && call.function;
-    if (fn && typeof fn.name === 'string') {
-      let args = {};
-      if (typeof fn.arguments === 'string') { try { args = JSON.parse(fn.arguments); } catch { args = {}; } }
-      else if (fn.arguments && typeof fn.arguments === 'object') args = fn.arguments;
-      return { kind: 'tool', tool: fn.name, args };
-    }
-    if (obj && typeof obj.final === 'string') return { kind: 'final', text: obj.final };
-  }
-  return parseMarkupToolCall(body) || { kind: 'final', text: t };
+  return { kind: 'final', text: t };
 }
 
 /** Free models frequently answer with `<function=list_dir><parameter=path>.</parameter></function>`
