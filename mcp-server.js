@@ -427,11 +427,15 @@ function parseAgentReply(text) {
  *  instead of the JSON the prompt asks for. Reading that as a final answer ends the loop after one
  *  step, so accept the two common markup shapes too. */
 function parseMarkupToolCall(body) {
+  // Shape A: <function=name><parameter=key>value</parameter></function>
   const fn = body.match(/<function\s*[=:]\s*["']?([A-Za-z_][\w.-]*)/) ||
              body.match(/<function\s+name\s*=\s*["']([A-Za-z_][\w.-]*)["']/);
-  if (!fn) return null;
+  // Shape B (Anthropic tool markup): <invoke name="read_file"><parameter name="offset">10</parameter></invoke>
+  const invoke = fn ? null : body.match(/<invoke\s+name\s*=\s*["']([A-Za-z_][\w.-]*)["']/);
+  const tool = fn ? fn[1] : (invoke ? invoke[1] : null);
+  if (!tool) return null;
   const args = {};
-  const paramRe = /<parameter\s*[=:]\s*["']?([A-Za-z_][\w.-]*)["']?\s*>([\s\S]*?)<\/parameter>/g;
+  const paramRe = /<parameter\s*(?:name\s*=|=\s*|:\s*)["']?([A-Za-z_][\w.-]*)["']?\s*>([\s\S]*?)<\/parameter>/g;
   let m;
   while ((m = paramRe.exec(body))) {
     const raw = m[2].trim();
@@ -439,7 +443,17 @@ function parseMarkupToolCall(body) {
       : /^(true|false)$/i.test(raw) ? raw.toLowerCase() === 'true'
       : raw;
   }
-  return { kind: 'tool', tool: fn[1], args };
+  return { kind: 'tool', tool, args };
+}
+
+/** True when a reply is OBVIOUSLY an attempt at a tool call that failed to parse as one.
+ *
+ *  Measured: a model answered with <function_calls><invoke name="read_file">...</invoke>,
+ *  which read as the FINAL answer and ended the run mid-task. Any of these markers means
+ *  the reply is a malformed call, not a finished answer. */
+function looksLikeToolAttempt(text) {
+  const t = String(text || '');
+  return /<function_calls\b|<invoke\s+name\s*=|<function\s*[=:]|<parameter\s+name\s*=/.test(t);
 }
 
 async function runSubagent(prompt, opts = {}) {
@@ -508,6 +522,22 @@ async function runSubagent(prompt, opts = {}) {
         // does not parse). Accepting it ends the run having changed nothing, so nudge for a
         // real tool call first. Bounded to 2, so a genuine no-tool answer still gets through.
         const didWork = trace.length > 0;
+        // A reply that LOOKS like a tool call (function_calls/invoke markup) but parsed as
+        // a final is a malformed call, not an answer — measured: it ended the run mid-task
+        // even after real work. Nudge for a usable call regardless of didWork.
+        const looksLikeCall = looksLikeToolAttempt(parsed.text);
+        if (looksLikeCall && !parsed.explicit && finalNudges < 2) {
+          finalNudges += 1;
+          emit(`step ${step}: tool-call markup did not parse (nudge ${finalNudges}/2)`);
+          messages.push({ role: 'assistant', content: r.text });
+          messages.push({
+            role: 'user',
+            content: 'That reply was tool-call markup the harness could not read, so nothing ran. '
+              + 'Reply with ONLY this JSON: {"tool":"<name>","args":{...}} using one of: read_file, list_dir, grep'
+              + (allowWrite ? ', write_file, edit_file' : '') + (allowBash ? ', run_bash' : '') + '.',
+          });
+          continue;
+        }
         if (!parsed.explicit && !didWork && finalNudges < 2) {
           finalNudges += 1;
           emit(`step ${step}: reply was neither a tool call nor a final — nudge ${finalNudges}/2`);
@@ -1462,6 +1492,6 @@ module.exports = {
   callTool, runSubagent, parseAgentReply, TOOLS, chat,
   // Exported so the tool layer and the reply parser can be tested without a model in the
   // loop — the parser and the edit/read/grep tools are where the subagent's failures lived.
-  __tools: { toolReadFile, toolListDir, toolGrep, toolWriteFile, toolEditFile, runTool, toolDocs, balancedObjects, repairJsonEscapes },
+  __tools: { toolReadFile, toolListDir, toolGrep, toolWriteFile, toolEditFile, runTool, toolDocs, balancedObjects, repairJsonEscapes, looksLikeToolAttempt, toolFromObject, tryParseJson },
   __jobs: { spawnSubagent, subagentStatus, subagentLog, subagentResult, subagentList, subagentKill, JOBS_DIR },
 };

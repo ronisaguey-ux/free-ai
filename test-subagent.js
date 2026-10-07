@@ -141,6 +141,18 @@ fs.writeFileSync(bigPath, big);
 }
 
 
+
+{
+  const reply = '<function_calls>\n<invoke name="read_file">\n<parameter name="path">/x/server.js</parameter>\n<parameter name="offset">3180</parameter>\n<parameter name="max_chars">250</parameter>\n</invoke>\n</function_calls>';
+  const r = parseAgentReply(reply);
+  check('parses Anthropic <invoke> markup',
+    r.kind === 'tool' && r.tool === 'read_file' && r.args.offset === 3180 && r.args.path === '/x/server.js',
+    JSON.stringify(r));
+  const { __tools } = require('./mcp-server.js');
+  check('recognises a malformed tool attempt', __tools.looksLikeToolAttempt(reply) === true);
+  check('plain prose is not a tool attempt', __tools.looksLikeToolAttempt('the answer is 42') === false);
+}
+
 // ── background subagent job store ────────────────────────────────────────────────
 {
   const { __jobs } = require('./mcp-server.js');
