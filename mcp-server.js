@@ -843,6 +843,11 @@ const TOOL_SPEC = [
   ['freeai_estimate', 'Rough token and character estimate for a prompt, before you send it.', { text: 'string' }, ['text']],
   ['freeai_state_export', 'Dump the router state file (cooldowns and counters).', {}, []],
   ['freeai_selftest', 'Check the router, the compressor and the tool loop all work end to end.', {}, []],
+
+  // opencode session control (talk to the local serve on :4096)
+  ['session_new', 'Create a FRESH opencode session. Optionally title it and pin it as this agent\'s working session. Returns the new session id.', { title: 'string', agent: 'string', pin: 'boolean' }, []],
+  ['session_compact', 'Compact THIS session: the model writes a structured summary of the conversation and the live context is REPLACED with that summary, then you continue. Use when context grows large.', { session_id: 'string', provider_id: 'string', model_id: 'string' }, []],
+  ['session_status', 'Report the pinned opencode session id and its basic info.', { session_id: 'string' }, []],
 ];
 
 function schemaFor(argsSpec = {}) {
@@ -1409,6 +1414,53 @@ async function callTool(name, args = {}) {
   if (!h) throw new Error(`unknown tool ${name}`);
   return h(args || {});
 }
+// -- opencode session control -------------------------------------------------
+// These talk to the local opencode serve (default :4096) so an agent can make a new
+// session or compact its own. The v2 /api/session/{id}/compact endpoint returns 503
+// on this build, so compact uses /session/{id}/summarize (structured summary REPLACES
+// the context). The agent's own session id comes from SESSION_PIN_FILE.
+const OPENCODE_BASE = process.env.OPENCODE_BASE || 'http://127.0.0.1:4096';
+const SESSION_PIN_FILE = process.env.SESSION_PIN_FILE || '';
+
+function pinnedSession() {
+  try {
+    if (SESSION_PIN_FILE) return fs.readFileSync(SESSION_PIN_FILE, 'utf8').trim();
+  } catch (e) { /* no pin */ }
+  return process.env.OPENCODE_SESSION || '';
+}
+
+HANDLERS.session_new = async (a) => {
+  const body = {};
+  if (a.title) body.title = String(a.title);
+  if (a.agent) body.agent = String(a.agent);
+  const r = await request('POST', `${OPENCODE_BASE}/session`, body, 30000);
+  const sess = r.json || {};
+  const sid = sess.id || (sess.data && sess.data.id) || null;
+  if (a.pin && sid && SESSION_PIN_FILE) fs.writeFileSync(SESSION_PIN_FILE, sid);
+  return { status: r.status, session_id: sid, session: sess };
+};
+
+HANDLERS.session_compact = async (a) => {
+  const sid = a.session_id || pinnedSession();
+  if (!sid) throw new Error('no session id (set SESSION_PIN_FILE or pass session_id)');
+  const providerID = a.provider_id || process.env.SESSION_COMPACT_PROVIDER || 'deepseek';
+  const modelID = a.model_id || process.env.SESSION_COMPACT_MODEL || 'deepseek-v4-pro';
+  const r = await request('POST', `${OPENCODE_BASE}/session/${sid}/summarize`,
+    { providerID, modelID }, 180000);
+  if (r.status === 200 && r.json === true) {
+    return { status: 200, compacted: true, session_id: sid, model: `${providerID}/${modelID}`,
+             note: 'context replaced with a structured summary; continue your work' };
+  }
+  return { status: r.status, compacted: false, detail: r.json || r.text };
+};
+
+HANDLERS.session_status = async (a) => {
+  const sid = a.session_id || pinnedSession();
+  if (!sid) throw new Error('no pinned session');
+  const r = await request('GET', `${OPENCODE_BASE}/session/${sid}`, undefined, 15000);
+  return { status: r.status, session_id: sid, session: r.json };
+};
+
 // -- JSON-RPC over stdio -----------------------------------------------------
 
 let buffer = '';

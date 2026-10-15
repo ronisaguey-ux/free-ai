@@ -467,7 +467,7 @@ function readBody(req) {
     const chunks = [];
     req.on('data', (c) => {
       n += c.length;
-      if (n > 32 * 1024 * 1024) { reject(new Error('request too large')); req.destroy(); return; }
+      if (n > 256 * 1024 * 1024) { reject(new Error('request too large')); req.destroy(); return; }
       chunks.push(c);
     });
     req.on('end', () => resolve(Buffer.concat(chunks).toString('utf8')));
