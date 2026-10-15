@@ -275,7 +275,29 @@ function _modelKeyOf(m, key) {
   return (m && m.anon_key) || key;
 }
 
-function upstream(m, body, key, signal) {
+const rateLimits = {
+  tokenharbor: { limit: 60, windowMs: 60000, history: [] },
+};
+
+async function acquireRateSlot(provider) {
+  const rl = rateLimits[provider];
+  if (!rl) return;
+  const nowMs = Date.now();
+  rl.history = rl.history.filter((ts) => nowMs - ts < rl.windowMs);
+  if (rl.history.length >= rl.limit) {
+    const oldest = rl.history[0];
+    const waitMs = rl.windowMs - (nowMs - oldest) + 50;
+    if (waitMs > 0 && waitMs <= 60000) {
+      await new Promise((r) => setTimeout(r, waitMs));
+    }
+  }
+  rl.history.push(Date.now());
+}
+
+async function upstream(m, body, key, signal) {
+  if (rateLimits[m.provider]) {
+    await acquireRateSlot(m.provider);
+  }
   const url = safeUpstreamUrl(m.base);
   if (!url) throw new Error(`refusing an unusable upstream base for ${m.provider}: ${String(m.base).slice(0, 40)}`);
   const payload = { ...body, model: m.model };
@@ -352,6 +374,7 @@ async function chat(body, cfgRes) {
     // thinking and a long wait is the correct behaviour.
     const _toMs = Number(m.timeout_ms
       || (m.provider === 'oculus_webchat' ? 420000 : 0)
+      || (m.provider === 'deepseek' ? 8000 : 0)
       || process.env.FREEAI_TIMEOUT_MS || 45000);
     const t = setTimeout(() => ctl.abort(), _toMs);
     const started = now();
@@ -374,10 +397,12 @@ async function chat(body, cfgRes) {
           let parsed = null;
           try { parsed = await res.json(); } catch { parsed = null; }
           const choice = parsed && Array.isArray(parsed.choices) ? parsed.choices[0] : null;
-          const content = choice && choice.message ? choice.message.content : null;
+          const msg = choice && choice.message ? choice.message : null;
+          const content = msg ? msg.content : null;
           const hasText = typeof content === 'string' ? content.trim().length > 0
             : Array.isArray(content) && content.length > 0;
-          if (!hasText) {
+          const hasTools = msg && (Array.isArray(msg.tool_calls) && msg.tool_calls.length > 0);
+          if (!hasText && !hasTools) {
             const why = 'empty completion (http 200, no content)';
             penalise(m, why);
             tried.push(`${m.provider}/${m.model} ${why}`);
@@ -410,7 +435,11 @@ async function chat(body, cfgRes) {
 
       const text = await res.text().catch(() => '');
       const why = `http ${res.status}: ${text.slice(0, 160)}`;
-      if (isPenalty(res.status) || isModelUnavailable(res.status, text)) {
+      // A provider that cannot parse/accept THIS body (size, unsupported fields) is a per-provider
+      // condition: route around it instead of returning its 400 to the caller.
+      const bodyRejected = (res.status === 400 || res.status === 413 || res.status === 422)
+        && /could not parse|malformed|not valid json|invalid json|too large|payload|context[_ ]length|maximum context|too many tokens/i.test(text);
+      if (isPenalty(res.status) || isModelUnavailable(res.status, text) || bodyRejected) {
         penalise(m, why);
         tried.push(`${m.provider}/${m.model} ${why}`);
         continue;
@@ -509,6 +538,9 @@ const server = http.createServer(async (req, res) => {
     let body;
     try { body = JSON.parse(await readBody(req)); }
     catch (e) { return send(res, 400, { error: { message: `invalid JSON: ${e.message}` } }); }
+    if (!body || typeof body !== 'object' || !Array.isArray(body.messages) || body.messages.length === 0) {
+      return send(res, 400, { error: { message: "Invalid request: 'messages' field is required and must be a non-empty array", type: "invalid_request_error" } });
+    }
     try {
       const out = await chat(body, res);
       if (out.streamed) return;
